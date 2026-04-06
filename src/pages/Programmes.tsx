@@ -13,13 +13,12 @@ const Programmes = () => {
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
     const currentTimeInMinutes = currentHour * 60 + currentMinute;
-    const currentDayIndex = (now.getDay() + 6) % 7; // Convert Sunday=0 to Monday=0
+    const currentDayIndex = (now.getDay() + 6) % 7;
 
     for (const slot of scheduleData) {
       const [startTime, endTime] = slot.time.split('-');
       const [startHour, startMinute] = startTime.replace('h', ':').split(':').map(Number);
       const [endHour, endMinute] = endTime.replace('h', ':').split(':').map(Number);
-      
       const startTimeInMinutes = startHour * 60 + startMinute;
       const endTimeInMinutes = endHour * 60 + endMinute;
 
@@ -27,11 +26,7 @@ const Programmes = () => {
         const currentDayKey = dayKeys[currentDayIndex] as keyof typeof slot;
         const currentProgram = slot[currentDayKey];
         if (currentProgram && currentProgram.trim() !== "") {
-          return {
-            program: currentProgram,
-            time: slot.time,
-            day: days[currentDayIndex]
-          };
+          return { program: currentProgram, time: slot.time, day: days[currentDayIndex] };
         }
       }
     }
@@ -43,17 +38,15 @@ const Programmes = () => {
   return (
     <div className="min-h-screen pt-20 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-4">Grille de Programmation</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Découvrez notre programmation quotidienne de 05h00 à 22h00
+            Découvrez notre programmation quotidienne - RTCT Goma 88.1 MHz
           </p>
         </div>
 
-        {/* Current Show */}
         {currentShow && (
-          <Card className="mb-8 gradient-kako">
+          <Card className="mb-8 gradient-rtct">
             <CardContent className="p-8 text-white text-center">
               <div className="flex items-center justify-center mb-4">
                 <Radio className="h-8 w-8 mr-3 animate-pulse" />
@@ -70,7 +63,6 @@ const Programmes = () => {
           </Card>
         )}
 
-        {/* Programming Schedule Table */}
         <div className="mb-12">
           <Card>
             <CardHeader>
@@ -83,18 +75,14 @@ const Programmes = () => {
                     <tr className="bg-muted">
                       <th className="border border-border p-3 text-left font-semibold">HEURE</th>
                       {days.map(day => (
-                        <th key={day} className="border border-border p-3 text-center font-semibold min-w-[120px]">
-                          {day}
-                        </th>
+                        <th key={day} className="border border-border p-3 text-center font-semibold min-w-[120px]">{day}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {scheduleData.map((slot, index) => (
                       <tr key={index} className="hover:bg-muted/50 transition-colors">
-                        <td className="border border-border p-3 font-medium bg-muted/30">
-                          {slot.time}
-                        </td>
+                        <td className="border border-border p-3 font-medium bg-muted/30">{slot.time}</td>
                         {dayKeys.map(dayKey => (
                           <td key={dayKey} className="border border-border p-3 text-center text-sm">
                             {slot[dayKey as keyof typeof slot] || "-"}
@@ -109,49 +97,26 @@ const Programmes = () => {
           </Card>
         </div>
 
-        {/* Contact Information */}
-        <Card className="gradient-kako-soft">
+        <Card className="gradient-rtct-soft">
           <CardContent className="p-8">
             <h3 className="text-2xl font-bold mb-6 text-center">Informations de Contact</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="text-center">
-                <MapPin className="h-8 w-8 mx-auto mb-3 text-kako-blue" />
+                <MapPin className="h-8 w-8 mx-auto mb-3 text-rtct-green" />
                 <h4 className="font-semibold mb-2">Adresse</h4>
-                <p className="text-sm text-muted-foreground">
-                  Ville de Goma, Commune de Karisimbi, Blvd SAKE
-                  <br />
-                  (Référence ENTREPÔT AKIFAR/Afia Bora)
-                </p>
+                <p className="text-sm text-muted-foreground">Ville de Goma, Nord-Kivu, RDC</p>
               </div>
               <div className="text-center">
-                <Phone className="h-8 w-8 mx-auto mb-3 text-kako-blue" />
-                <h4 className="font-semibold mb-2">Contacts</h4>
-                <p className="text-sm text-muted-foreground">
-                  +243 996 886 079
-                  <br />
-                  +243 980 265 601
-                </p>
-              </div>
-              <div className="text-center">
-                <Mail className="h-8 w-8 mx-auto mb-3 text-kako-blue" />
+                <Mail className="h-8 w-8 mx-auto mb-3 text-rtct-green" />
                 <h4 className="font-semibold mb-2">E-mail</h4>
-                <p className="text-sm text-muted-foreground">
-                  kakofmtv@gmail.com
-                  <br />
-                  contact@kakofm.net
-                </p>
+                <p className="text-sm text-muted-foreground">contact@radiotayna.com</p>
               </div>
               <div className="text-center">
-                <Globe className="h-8 w-8 mx-auto mb-3 text-kako-blue" />
+                <Globe className="h-8 w-8 mx-auto mb-3 text-rtct-green" />
                 <h4 className="font-semibold mb-2">Site Web</h4>
                 <p className="text-sm text-muted-foreground">
-                  <a 
-                    href="https://www.kakofm.net" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-kako-blue hover:text-kako-yellow transition-colors"
-                  >
-                    www.kakofm.net
+                  <a href="https://www.radiotayna.com" target="_blank" rel="noopener noreferrer" className="text-rtct-green hover:underline transition-colors">
+                    www.radiotayna.com
                   </a>
                 </p>
               </div>
