@@ -20,13 +20,12 @@ const LiveBanner = () => {
       
       const newProgram = getCurrentProgram();
       
-      // Notifier si le programme a changé et qu'on peut notifier
       if (newProgram !== lastNotifiedProgram && canNotify && newProgram !== 'DETENTE') {
         showNotification({
-          title: 'Nouveau programme sur KAKO FM',
+          title: 'Nouveau programme sur RTCT',
           body: `${newProgram} vient de commencer`,
           tag: 'program-change',
-          icon: '/favicon.ico'
+          icon: '/src/assets/logo-rtct.png'
         });
         setLastNotifiedProgram(newProgram);
       }
@@ -34,22 +33,18 @@ const LiveBanner = () => {
       setCurrentProgram(newProgram);
     };
 
-    // Update immediately
     updateCurrentProgram();
-
-    // Update every minute
     const interval = setInterval(updateCurrentProgram, 60000);
-
     return () => clearInterval(interval);
   }, [canNotify, showNotification, lastNotifiedProgram]);
 
   return (
-    <div className="bg-gradient-to-r from-kako-red to-kako-yellow text-white py-1 px-4">
+    <div className="bg-gradient-to-r from-rtct-green-dark to-rtct-green-light text-white py-1 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-center space-x-2 sm:space-x-4 text-xs sm:text-sm font-medium">
           <div className="flex items-center space-x-1 sm:space-x-2">
             <Radio className="h-3 w-3 sm:h-4 sm:w-4 animate-pulse" />
-            <span className="text-xs sm:text-sm"></span>
+            <span className="text-xs sm:text-sm">88.1 MHz</span>
           </div>
           <div className="hidden sm:block text-sm sm:text-lg font-bold">
             {currentProgram}
@@ -59,11 +54,8 @@ const LiveBanner = () => {
             <span className="text-xs sm:text-sm">{currentTime}</span>
           </div>
         </div>
-        {/* Mobile version - show program name on separate line */}
         <div className="sm:hidden text-center">
-          <div className="text-sm font-bold truncate">
-            {currentProgram}
-          </div>
+          <div className="text-sm font-bold truncate">{currentProgram}</div>
         </div>
       </div>
     </div>

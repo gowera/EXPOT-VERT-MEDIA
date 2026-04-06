@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,10 +62,17 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
+				rtct: {
+					green: '#2E7D32',
+					'green-light': '#43A047',
+					'green-dark': '#1B5E20',
+					dark: '#1A1A1A'
+				},
+				// Keep kako aliases for backward compatibility
 				kako: {
-					yellow: '#FFD700',
-					red: '#FF4444',
-					blue: '#4A90E2',
+					yellow: '#2E7D32',
+					red: '#1B5E20',
+					blue: '#2E7D32',
 					dark: '#1A1A1A'
 				}
 			},
