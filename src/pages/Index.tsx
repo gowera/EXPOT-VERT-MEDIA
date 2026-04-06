@@ -5,61 +5,43 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Calendar, Clock, Eye, Users, Play, ExternalLink, Download, Headphones, Phone, Mail, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import BannerAd from '@/components/BannerAd';
+import logoRtct from '@/assets/logo-rtct.png';
+
 interface WordPressPost {
   id: number;
-  title: {
-    rendered: string;
-  };
-  excerpt: {
-    rendered: string;
-  };
+  title: { rendered: string };
+  excerpt: { rendered: string };
   date: string;
   link: string;
   slug: string;
   categories: number[];
   _embedded?: {
-    'wp:featuredmedia'?: Array<{
-      source_url: string;
-      alt_text: string;
-    }>;
-    'wp:term'?: Array<Array<{
-      id: number;
-      name: string;
-      slug: string;
-    }>>;
+    'wp:featuredmedia'?: Array<{ source_url: string; alt_text: string }>;
+    'wp:term'?: Array<Array<{ id: number; name: string; slug: string }>>;
   };
 }
+
 interface YouTubeVideo {
-  id: {
-    videoId: string;
-  };
+  id: { videoId: string };
   snippet: {
     title: string;
     description: string;
     publishedAt: string;
-    thumbnails: {
-      medium: {
-        url: string;
-      };
-    };
+    thumbnails: { medium: { url: string } };
   };
 }
+
 const Index = () => {
-  const {
-    data: articles,
-    isLoading: articlesLoading
-  } = useQuery({
+  const { data: articles, isLoading: articlesLoading } = useQuery({
     queryKey: ['articles', 'featured'],
     queryFn: async () => {
-      const response = await fetch('https://kakofm.net/wp-json/wp/v2/posts?_embed&per_page=6');
+      const response = await fetch('https://radiotayna.com/wp-json/wp/v2/posts?_embed&per_page=6');
       if (!response.ok) throw new Error('Erreur lors du chargement des articles');
       return response.json() as Promise<WordPressPost[]>;
     }
   });
-  const {
-    data: videos,
-    isLoading: videosLoading
-  } = useQuery({
+
+  const { data: videos, isLoading: videosLoading } = useQuery({
     queryKey: ['youtube-videos-home'],
     queryFn: async () => {
       const API_KEY = 'AIzaSyAm1eWQTfpnRIPKIPw4HTZDOgWuciITktI';
@@ -71,50 +53,32 @@ const Index = () => {
       return data.items as YouTubeVideo[];
     }
   });
+
   const podcasts = [{
     id: 1,
-    title: "KAKO Talk - L'actualité décryptée",
-    description: "Chaque semaine, notre équipe décrypte l'actualité politique, sociale et culturelle.",
+    title: "RTCT Talk - L'actualité environnementale",
+    description: "Chaque semaine, notre équipe décrypte l'actualité environnementale et la conservation.",
     duration: "45 min",
     date: "2024-01-10",
-    imageUrl: "/lovable-uploads/aabba1de-25fd-401f-93f5-5dec01693fae.png",
-    category: "Actualité"
+    imageUrl: logoRtct,
+    category: "Environnement"
   }, {
     id: 2,
-    title: "Musique & Culture",
-    description: "Découverte de nouveaux artistes et analyse des tendances musicales.",
+    title: "Nature & Culture",
+    description: "Découverte de la biodiversité et des traditions locales.",
     duration: "35 min",
     date: "2024-01-08",
-    imageUrl: "/lovable-uploads/aabba1de-25fd-401f-93f5-5dec01693fae.png",
+    imageUrl: logoRtct,
     category: "Culture"
   }, {
     id: 3,
-    title: "Jeunesse & Engagement",
-    description: "Focus sur les initiatives de la jeunesse africaine.",
+    title: "Communauté & Conservation",
+    description: "Focus sur les initiatives communautaires pour la protection de l'environnement.",
     duration: "40 min",
     date: "2024-01-05",
-    imageUrl: "/lovable-uploads/aabba1de-25fd-401f-93f5-5dec01693fae.png",
-    category: "Société"
+    imageUrl: logoRtct,
+    category: "Conservation"
   }];
-  // Images du studio pour rotation quotidienne
-  const studioImages = [
-    "/lovable-uploads/2f6127f1-73c0-45d0-8ffa-607ce1cc2f27.png",
-    "/lovable-uploads/e0b725fd-53e8-4a11-969e-8c1746b360d8.png", 
-    "/lovable-uploads/8f58c642-245d-4062-b793-c59c35a2986b.png",
-    "/lovable-uploads/29d54709-ad79-47ee-b9bd-60a672633460.png",
-    "/lovable-uploads/d784d28e-961d-4c55-8a69-bd0c02d1b8f4.png",
-    "/lovable-uploads/4519f4db-2352-4175-8fd9-6c94bf912d10.png",
-    "/lovable-uploads/5f6de7c2-8f1e-4130-a639-d505290aa64d.png",
-    "/lovable-uploads/11d1a61c-e417-4fa4-9daa-3086725b4733.png",
-    "/lovable-uploads/4b55ef86-f82d-4f47-b6c4-9c26dfc99977.png"
-  ];
-
-  // Fonction pour obtenir l'image du jour
-  const getDailyStudioImage = () => {
-    const today = new Date();
-    const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
-    return studioImages[dayOfYear % studioImages.length];
-  };
 
   const handleLiveRadio = () => {
     const audioPlayer = document.querySelector('audio');
@@ -124,6 +88,7 @@ const Index = () => {
       }
     }
   };
+
   const formatDuration = (publishedAt: string) => {
     const date = new Date(publishedAt);
     const now = new Date();
@@ -134,32 +99,24 @@ const Index = () => {
     if (diffDays < 30) return `Il y a ${Math.ceil(diffDays / 7)} semaines`;
     return `Il y a ${Math.ceil(diffDays / 30)} mois`;
   };
+
   return <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="min-h-[70vh] flex items-center relative">
-          {/* Background Image */}
-          <div className="absolute inset-0 w-full h-full">
-            <img 
-              src={getDailyStudioImage()} 
-              alt="Studio radio KAKO FM - Images du quotidien" 
-              className="w-full h-full object-cover"
-            />
-            {/* Overlay avec opacité réduite pour meilleure visibilité */}
-            <div className="absolute inset-0 bg-gradient-to-br from-kako-blue/40 via-kako-red/40 to-kako-yellow/40"></div>
-          </div>
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-rtct-green-dark via-rtct-green to-rtct-green-light"></div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
             <div className="text-center text-white">
               <div className="animate-slide-up">
-                
+                <img src={logoRtct} alt="RTCT Goma" className="h-24 w-auto mx-auto mb-6" />
                 <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold mb-4 md:mb-6 tracking-wider leading-tight drop-shadow-2xl">
-                  97.2 MHz
+                  88.1 MHz
                 </h1>
                 <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 drop-shadow-xl">
-                  KAKO FM
+                  RTCT GOMA
                 </h2>
                 <p className="text-base md:text-lg lg:text-xl mb-6 md:mb-8 opacity-90 max-w-3xl mx-auto drop-shadow-lg">
-                  Radio & Télévision Kako - La voix de la jeunesse engagée
+                  Radio Télévision Communautaire Tayna - Pour la conservation de l'environnement
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto">
                   <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-3 text-sm md:text-base shadow-xl hover:shadow-2xl transition-shadow" onClick={handleLiveRadio}>
@@ -200,10 +157,9 @@ const Index = () => {
               {articles?.slice(0, 6).map(article => <Card key={article.id} className="hover-lift overflow-hidden">
                   {article._embedded?.['wp:featuredmedia']?.[0] && <div className="h-48 overflow-hidden relative">
                       <img src={article._embedded['wp:featuredmedia'][0].source_url} alt={article._embedded['wp:featuredmedia'][0].alt_text || article.title.rendered} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-                      {/* Category Badge */}
                       {article._embedded?.['wp:term']?.[0]?.[0] && (
                         <div className="absolute top-3 left-3">
-                          <span className="bg-kako-blue/90 text-white px-2 py-1 rounded-md text-xs font-medium backdrop-blur-sm">
+                          <span className="bg-rtct-green/90 text-white px-2 py-1 rounded-md text-xs font-medium backdrop-blur-sm">
                             {article._embedded['wp:term'][0][0].name}
                           </span>
                         </div>
@@ -232,7 +188,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Banner Advertisement */}
       <BannerAd />
 
       {/* Latest Videos */}
@@ -290,7 +245,7 @@ const Index = () => {
                       </div>
                     </div>
                     
-                    <Button size="sm" className="w-full gradient-kako text-white" asChild>
+                    <Button size="sm" className="w-full gradient-rtct text-white" asChild>
                       <Link to={`/video/${video.id.videoId}`}>
                         <Play className="h-4 w-4 mr-1" />
                         Regarder
@@ -302,7 +257,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Banner Advertisement */}
       <BannerAd />
 
       {/* Latest Podcasts */}
@@ -327,7 +281,7 @@ const Index = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-kako-blue/10 text-kako-blue px-2 py-1 rounded-full text-xs font-medium">
+                        <span className="bg-rtct-green/10 text-rtct-green px-2 py-1 rounded-full text-xs font-medium">
                           {podcast.category}
                         </span>
                       </div>
@@ -350,7 +304,7 @@ const Index = () => {
                     {podcast.description}
                   </p>
                   <div className="flex gap-2">
-                    <Button size="sm" className="flex-1 gradient-kako text-white">
+                    <Button size="sm" className="flex-1 gradient-rtct text-white">
                       <Play className="h-4 w-4 mr-1" />
                       Écouter
                     </Button>
@@ -365,17 +319,17 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-8 md:py-16 gradient-kako">
+      <section className="py-8 md:py-16 gradient-rtct">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-white mb-6">
-            Rejoignez la communauté KAKO FM
+            Rejoignez la communauté RTCT
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            Découvrez nos émissions, podcasts et restez connecté avec nous
+            Ensemble pour la conservation de l'environnement et le développement communautaire
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100" asChild>
-              <Link to="/soutenir">💛 Soutenir KAKO</Link>
+              <Link to="/soutenir">🌿 Soutenir RTCT</Link>
             </Button>
             <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 bg-transparent" asChild>
               <Link to="/contact">📞 Nous contacter</Link>

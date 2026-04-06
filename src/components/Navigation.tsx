@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Radio, Headphones, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import logoRtct from '@/assets/logo-rtct.png';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +23,6 @@ const Navigation = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const handleLiveRadio = () => {
-    // Trigger radio player
     const radioPlayer = document.querySelector('audio');
     if (radioPlayer) {
       if (radioPlayer.paused) {
@@ -39,8 +39,8 @@ const Navigation = () => {
           <Link to="/" className="flex items-center space-x-2">
             <div className="logo-rounded">
               <img 
-                src="/lovable-uploads/aabba1de-25fd-401f-93f5-5dec01693fae.png" 
-                alt="KAKO FM" 
+                src={logoRtct} 
+                alt="RTCT Goma" 
                 className="h-10 w-auto"
               />
             </div>
@@ -55,19 +55,18 @@ const Navigation = () => {
                   to={item.path}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                     isActive(item.path)
-                      ? 'bg-gradient-to-r from-kako-yellow to-kako-red text-white'
-                      : 'text-gray-700 hover:text-kako-blue hover:bg-gray-50'
+                      ? 'bg-gradient-to-r from-rtct-green-dark to-rtct-green text-white'
+                      : 'text-gray-700 hover:text-rtct-green hover:bg-gray-50'
                   }`}
                 >
                   {item.label}
                 </Link>
               ))}
               
-              {/* Live Radio Button - Desktop */}
               <Button 
                 onClick={handleLiveRadio}
                 size="sm" 
-                className="gradient-kako text-white hover:opacity-90 transition-opacity"
+                className="gradient-rtct text-white hover:opacity-90 transition-opacity"
               >
                 <Play className="h-4 w-4 mr-2" />
                 En direct
@@ -81,7 +80,7 @@ const Navigation = () => {
               <Button 
                 onClick={handleLiveRadio}
                 size="sm" 
-                className="gradient-kako text-white hover:opacity-90 transition-opacity"
+                className="gradient-rtct text-white hover:opacity-90 transition-opacity"
               >
                 <Play className="h-4 w-4 mr-2" />
                 En direct
@@ -89,7 +88,7 @@ const Navigation = () => {
               
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-kako-blue hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-kako-blue"
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-rtct-green hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-rtct-green"
               >
                 {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
@@ -98,20 +97,18 @@ const Navigation = () => {
 
           {/* Mobile controls */}
           <div className="md:hidden flex items-center space-x-2">
-            {/* Live Radio Button - Mobile */}
             <Button 
               onClick={handleLiveRadio}
               size="sm" 
-              className="gradient-kako text-white hover:opacity-90 transition-opacity"
+              className="gradient-rtct text-white hover:opacity-90 transition-opacity"
             >
               <Play className="h-4 w-4 mr-1" />
               <span className="text-xs">En direct</span>
             </Button>
             
-            {/* Mobile menu button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-kako-blue hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-kako-blue"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-rtct-green hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-rtct-green"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -130,8 +127,8 @@ const Navigation = () => {
                 onClick={() => setIsOpen(false)}
                 className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
                   isActive(item.path)
-                    ? 'bg-gradient-to-r from-kako-yellow to-kako-red text-white'
-                    : 'text-gray-700 hover:text-kako-blue hover:bg-gray-50'
+                    ? 'bg-gradient-to-r from-rtct-green-dark to-rtct-green text-white'
+                    : 'text-gray-700 hover:text-rtct-green hover:bg-gray-50'
                 }`}
               >
                 {item.label}
@@ -152,8 +149,8 @@ const Navigation = () => {
                 onClick={() => setIsOpen(false)}
                 className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
                   isActive(item.path)
-                    ? 'bg-gradient-to-r from-kako-yellow to-kako-red text-white'
-                    : 'text-gray-700 hover:text-kako-blue hover:bg-gray-50'
+                    ? 'bg-gradient-to-r from-rtct-green-dark to-rtct-green text-white'
+                    : 'text-gray-700 hover:text-rtct-green hover:bg-gray-50'
                 }`}
               >
                 {item.label}

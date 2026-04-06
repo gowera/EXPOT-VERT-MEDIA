@@ -14,8 +14,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 45 100% 50%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 145 63% 32%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -23,7 +23,7 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 0 84% 56%;
+    --accent: 145 63% 42%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -31,7 +31,7 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 45 100% 50%;
+    --ring: 145 63% 32%;
 
     --radius: 0.75rem;
 
@@ -42,7 +42,7 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 145 63% 32%;
   }
 
   .dark {
@@ -55,8 +55,8 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 45 100% 50%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 145 63% 32%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -64,7 +64,7 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 0 84% 56%;
+    --accent: 145 63% 42%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
@@ -72,16 +72,16 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 45 100% 50%;
+    --ring: 145 63% 32%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 145 63% 32%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 145 63% 32%;
   }
 }
 
@@ -106,17 +106,26 @@
   left: 0;
   right: 0;
   z-index: 50;
-  background: linear-gradient(135deg, #FFD700 0%, #FF4444 50%, #4A90E2 100%);
+  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
   backdrop-filter: blur(10px);
 }
 
 /* Gradient Backgrounds */
+.gradient-rtct {
+  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
+}
+
+.gradient-rtct-soft {
+  background: linear-gradient(135deg, rgba(27, 94, 32, 0.1) 0%, rgba(46, 125, 50, 0.1) 50%, rgba(67, 160, 71, 0.1) 100%);
+}
+
+/* Legacy class aliases */
 .gradient-kako {
-  background: linear-gradient(135deg, #FFD700 0%, #FF4444 50%, #4A90E2 100%);
+  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
 }
 
 .gradient-kako-soft {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 68, 68, 0.1) 50%, rgba(74, 144, 226, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(27, 94, 32, 0.1) 0%, rgba(46, 125, 50, 0.1) 50%, rgba(67, 160, 71, 0.1) 100%);
 }
 
 /* Hover Effects */
@@ -187,7 +196,7 @@
 }
 
 .article-content blockquote {
-  @apply border-l-4 border-kako-blue pl-6 py-4 my-8 italic bg-gray-50 rounded-r-lg text-gray-700;
+  @apply border-l-4 border-rtct-green pl-6 py-4 my-8 italic bg-gray-50 rounded-r-lg text-gray-700;
 }
 
 .article-content ul, 
@@ -212,7 +221,7 @@
 }
 
 .article-content a {
-  @apply text-kako-blue hover:underline font-medium;
+  @apply text-rtct-green hover:underline font-medium;
 }
 
 .article-content strong, 
@@ -281,11 +290,11 @@
 }
 
 .comment-form textarea {
-  @apply w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-kako-blue focus:border-transparent;
+  @apply w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-rtct-green focus:border-transparent;
 }
 
 .comment-form button {
-  @apply px-6 py-2 bg-gradient-to-r from-kako-yellow to-kako-red text-white rounded-lg hover:opacity-90 transition-opacity;
+  @apply px-6 py-2 bg-gradient-to-r from-rtct-dark to-rtct-green text-white rounded-lg hover:opacity-90 transition-opacity;
 }
 
 /* Utility classes for text truncation */
