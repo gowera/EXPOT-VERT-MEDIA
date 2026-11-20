@@ -106,26 +106,26 @@
   left: 0;
   right: 0;
   z-index: 50;
-  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
+  background: linear-gradient(135deg, #0C4A1E 0%, #1C7A34 50%, #2FA34A 100%);
   backdrop-filter: blur(10px);
 }
 
 /* Gradient Backgrounds */
 .gradient-rtct {
-  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
+  background: linear-gradient(135deg, #0C4A1E 0%, #1C7A34 50%, #2FA34A 100%);
 }
 
 .gradient-rtct-soft {
-  background: linear-gradient(135deg, rgba(27, 94, 32, 0.1) 0%, rgba(46, 125, 50, 0.1) 50%, rgba(67, 160, 71, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(12, 74, 30, 0.1) 0%, rgba(28, 122, 52, 0.1) 50%, rgba(47, 163, 74, 0.1) 100%);
 }
 
 /* Legacy class aliases */
 .gradient-kako {
-  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
+  background: linear-gradient(135deg, #0C4A1E 0%, #1C7A34 50%, #2FA34A 100%);
 }
 
 .gradient-kako-soft {
-  background: linear-gradient(135deg, rgba(27, 94, 32, 0.1) 0%, rgba(46, 125, 50, 0.1) 50%, rgba(67, 160, 71, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(12, 74, 30, 0.1) 0%, rgba(28, 122, 52, 0.1) 50%, rgba(47, 163, 74, 0.1) 100%);
 }
 
 /* Hover Effects */

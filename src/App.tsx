@@ -11,8 +11,6 @@ import Articles from "./pages/Articles";
 import Article from "./pages/Article";
 import Videos from "./pages/Videos";
 import VideoPlayer from "./pages/VideoPlayer";
-import Podcasts from "./pages/Podcasts";
-import Programmes from "./pages/Programmes";
 import Equipe from "./pages/Equipe";
 import Contact from "./pages/Contact";
 import Soutenir from "./pages/Soutenir";
@@ -45,8 +43,6 @@ const App = () => (
             <Route path="/article/:slug" element={<Article />} />
             <Route path="/videos" element={<Videos />} />
             <Route path="/video/:videoId" element={<VideoPlayer />} />
-            <Route path="/podcasts" element={<Podcasts />} />
-            <Route path="/programmes" element={<Programmes />} />
             <Route path="/equipe" element={<Equipe />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/soutenir" element={<Soutenir />} />

@@ -1,165 +1,76 @@
-
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Radio, Headphones, Play } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import logoRtct from '@/assets/logo-rtct.png';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Search } from 'lucide-react';
+import logo from '@/assets/logo-evm.png';
+import { RUBRIQUES } from '@/lib/articles';
+
+const navItems = [
+  { path: '/', label: 'Accueil' },
+  { path: '/articles', label: 'Actualités' },
+  { path: '/videos', label: 'Vidéos' },
+  { path: '/equipe', label: 'Équipe' },
+  { path: '/a-propos', label: 'À propos' },
+  { path: '/contact', label: 'Contact' },
+  { path: '/soutenir', label: 'Soutenir' },
+];
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-
-  const navItems = [
-    { path: '/', label: 'Accueil' },
-    { path: '/articles', label: 'Articles' },
-    { path: '/videos', label: 'Vidéos' },
-    { path: '/podcasts', label: 'Podcasts' },
-    { path: '/programmes', label: 'Programmes' },
-    { path: '/equipe', label: 'Équipe' },
-    { path: '/contact', label: 'Contact' },
-    { path: '/soutenir', label: 'Soutenir' },
-  ];
-
+  const navigate = useNavigate();
   const isActive = (path: string) => location.pathname === path;
-
-  const handleLiveRadio = () => {
-    const radioPlayer = document.querySelector('audio');
-    if (radioPlayer) {
-      if (radioPlayer.paused) {
-        radioPlayer.play();
-      }
-    }
-  };
+  const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="logo-rounded">
-              <img 
-                src={logoRtct} 
-                alt="RTCT Goma" 
-                className="h-10 w-auto"
-              />
-            </div>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden lg:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                    isActive(item.path)
-                      ? 'bg-gradient-to-r from-rtct-green-dark to-rtct-green text-white'
-                      : 'text-gray-700 hover:text-rtct-green hover:bg-gray-50'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              
-              <Button 
-                onClick={handleLiveRadio}
-                size="sm" 
-                className="gradient-rtct text-white hover:opacity-90 transition-opacity"
-              >
-                <Play className="h-4 w-4 mr-2" />
-                En direct
-              </Button>
-            </div>
-          </div>
-
-          {/* Medium screens navigation */}
-          <div className="hidden md:block lg:hidden">
-            <div className="flex items-center space-x-2">
-              <Button 
-                onClick={handleLiveRadio}
-                size="sm" 
-                className="gradient-rtct text-white hover:opacity-90 transition-opacity"
-              >
-                <Play className="h-4 w-4 mr-2" />
-                En direct
-              </Button>
-              
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-rtct-green hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-rtct-green"
-              >
-                {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile controls */}
-          <div className="md:hidden flex items-center space-x-2">
-            <Button 
-              onClick={handleLiveRadio}
-              size="sm" 
-              className="gradient-rtct text-white hover:opacity-90 transition-opacity"
-            >
-              <Play className="h-4 w-4 mr-1" />
-              <span className="text-xs">En direct</span>
-            </Button>
-            
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-rtct-green hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-rtct-green"
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+      <div className="hidden md:block bg-rtct-green-dark text-white text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-7 flex items-center justify-between">
+          <span className="capitalize">{today}</span>
+          <span className="tracking-widest uppercase">Un œil sur le monde</span>
         </div>
       </div>
-
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="md:hidden lg:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16 gap-4">
+          <Link to="/" className="flex items-center shrink-0">
+            <img src={logo} alt="Expo Vert Média" className="h-11 w-auto" />
+          </Link>
+          <nav className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
-                  isActive(item.path)
-                    ? 'bg-gradient-to-r from-rtct-green-dark to-rtct-green text-white'
-                    : 'text-gray-700 hover:text-rtct-green hover:bg-gray-50'
-                }`}
-              >
+              <Link key={item.path} to={item.path}
+                className={`px-3 py-2 text-sm font-semibold uppercase tracking-wide border-b-2 transition-colors ${
+                  isActive(item.path) ? 'border-rtct-green text-rtct-green' : 'border-transparent text-gray-700 hover:text-rtct-green'}`}>
                 {item.label}
               </Link>
             ))}
-          </div>
+            <button aria-label="Rechercher" onClick={() => navigate('/articles')} className="ml-2 p-2 rounded-full text-gray-700 hover:bg-gray-100">
+              <Search className="h-5 w-5" />
+            </button>
+          </nav>
+          <button aria-label="Menu" onClick={() => setIsOpen(!isOpen)}
+            className="lg:hidden p-2 rounded-md text-gray-700 hover:text-rtct-green hover:bg-gray-50">
+            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
-      )}
-
-      {/* Medium screens menu */}
+      </div>
+      <div className="hidden lg:block border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-5 overflow-x-auto py-2 text-xs font-medium text-gray-600 whitespace-nowrap">
+          {RUBRIQUES.map((r) => (
+            <Link key={r} to={`/articles?rubrique=${encodeURIComponent(r)}`} className="hover:text-rtct-green">{r}</Link>
+          ))}
+        </div>
+      </div>
       {isOpen && (
-        <div className="hidden md:block lg:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
-                  isActive(item.path)
-                    ? 'bg-gradient-to-r from-rtct-green-dark to-rtct-green text-white'
-                    : 'text-gray-700 hover:text-rtct-green hover:bg-gray-50'
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
+        <div className="lg:hidden px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
+          {navItems.map((item) => (
+            <Link key={item.path} to={item.path} onClick={() => setIsOpen(false)}
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
+                isActive(item.path) ? 'bg-rtct-green text-white' : 'text-gray-700 hover:text-rtct-green hover:bg-gray-50'}`}>
+              {item.label}
+            </Link>
+          ))}
         </div>
       )}
-    </nav>
+    </header>
   );
 };
 

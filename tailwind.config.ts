@@ -63,16 +63,16 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				rtct: {
-					green: '#2E7D32',
-					'green-light': '#43A047',
-					'green-dark': '#1B5E20',
+					green: '#1C7A34',
+					'green-light': '#2FA34A',
+					'green-dark': '#0C4A1E',
 					dark: '#1A1A1A'
 				},
 				// Keep kako aliases for backward compatibility
 				kako: {
-					yellow: '#2E7D32',
-					red: '#1B5E20',
-					blue: '#2E7D32',
+					yellow: '#1C7A34',
+					red: '#0C4A1E',
+					blue: '#1C7A34',
 					dark: '#1A1A1A'
 				}
 			},

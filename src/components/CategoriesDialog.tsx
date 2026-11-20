@@ -4,14 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Tag } from 'lucide-react';
-
-interface WordPressCategory {
-  id: number;
-  name: string;
-  slug: string;
-  description: string;
-  count: number;
-}
+import { fetchCategories, Category } from '@/lib/articles';
 
 interface CategoriesDialogProps {
   onCategorySelect?: (categoryId: number, categoryName: string) => void;
@@ -20,21 +13,11 @@ interface CategoriesDialogProps {
 
 const CategoriesDialog: React.FC<CategoriesDialogProps> = ({ onCategorySelect, selectedCategory }) => {
   const [open, setOpen] = useState(false);
+  const { data: categories, isLoading, error } = useQuery({ queryKey: ['categories'], queryFn: fetchCategories });
 
-  const { data: categories, isLoading, error } = useQuery({
-    queryKey: ['categories'],
-    queryFn: async () => {
-      const response = await fetch('https://radiotayna.com/wp-json/wp/v2/categories?per_page=50');
-      if (!response.ok) throw new Error('Erreur lors du chargement des catégories');
-      return response.json() as Promise<WordPressCategory[]>;
-    },
-  });
-
-  const handleCategoryClick = (category: WordPressCategory) => {
-    if (onCategorySelect) {
-      onCategorySelect(category.id, category.name);
-      setOpen(false);
-    }
+  const handleCategoryClick = (category: Category) => {
+    onCategorySelect?.(category.id, category.name);
+    setOpen(false);
   };
 
   return (
@@ -46,33 +29,24 @@ const CategoriesDialog: React.FC<CategoriesDialogProps> = ({ onCategorySelect, s
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center space-x-2">
-            <Tag className="h-5 w-5" /><span>Catégories d'articles</span>
-          </DialogTitle>
+          <DialogTitle className="flex items-center space-x-2"><Tag className="h-5 w-5" /><span>Catégories d'articles</span></DialogTitle>
         </DialogHeader>
         <div className="mt-4">
           {isLoading ? (
-            <div className="flex justify-center items-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-rtct-green" />
-              <span className="ml-2 text-gray-600">Chargement des catégories...</span>
-            </div>
+            <div className="flex justify-center items-center py-8"><Loader2 className="h-6 w-6 animate-spin text-rtct-green" /><span className="ml-2 text-gray-600">Chargement...</span></div>
           ) : error ? (
             <div className="text-center py-8 text-red-600">Erreur lors du chargement des catégories</div>
+          ) : !categories?.length ? (
+            <div className="text-center py-8 text-gray-600">Aucune catégorie pour le moment.</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto">
-              {categories?.map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => handleCategoryClick(category)}
-                  className={`p-4 text-left rounded-lg border transition-colors ${
-                    selectedCategory === category.id ? 'bg-rtct-green/10 border-rtct-green' : 'hover:bg-gray-50 border-gray-200'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-2">
+              {categories.map((category) => (
+                <button key={category.id} onClick={() => handleCategoryClick(category)}
+                  className={`p-4 text-left rounded-lg border transition-colors ${selectedCategory === category.id ? 'bg-rtct-green/10 border-rtct-green' : 'hover:bg-gray-50 border-gray-200'}`}>
+                  <div className="flex items-center justify-between">
                     <h3 className="font-medium text-gray-900">{category.name}</h3>
                     <Badge variant="secondary" className="text-xs">{category.count}</Badge>
                   </div>
-                  {category.description && <p className="text-sm text-gray-600 line-clamp-2">{category.description}</p>}
                 </button>
               ))}
             </div>

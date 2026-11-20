@@ -1,29 +1,14 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { fetchPosts } from '@/lib/articles';
 import { supabase } from '@/integrations/supabase/client';
 
-interface WordPressPost {
-  id: number;
-  title: { rendered: string };
-  excerpt: { rendered: string };
-  date: string;
-  slug: string;
-  _embedded?: {
-    'wp:featuredmedia'?: Array<{
-      source_url: string;
-    }>;
-  };
-}
 
 const NewsletterTrigger = () => {
   // Check for new articles every 5 minutes
   const { data: latestArticles } = useQuery({
     queryKey: ['latest-articles-newsletter'],
-    queryFn: async () => {
-      const response = await fetch('https://kakofm.net/wp-json/wp/v2/posts?_embed&per_page=5&orderby=date&order=desc');
-      if (!response.ok) throw new Error('Failed to fetch articles');
-      return response.json() as Promise<WordPressPost[]>;
-    },
+    queryFn: () => fetchPosts({ perPage: 5 }),
     refetchInterval: 5 * 60 * 1000, // 5 minutes
   });
 
@@ -57,6 +42,7 @@ const NewsletterTrigger = () => {
                   data: {
                     id: article.id.toString(),
                     title: article.title.rendered,
+                    slug: article.slug,
                     brief: article.excerpt.rendered.replace(/<[^>]*>/g, '').substring(0, 200),
                     imageUrl: article._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
                   },

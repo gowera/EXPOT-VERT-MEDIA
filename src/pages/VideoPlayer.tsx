@@ -1,3 +1,4 @@
+import { fetchPosts } from '@/lib/articles';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -55,7 +56,7 @@ const VideoPlayer = () => {
     enabled: !!videoId,
   });
 
-  // Fetch related videos from KAKO FM channel
+  // Fetch related videos from Expo Vert Média channel
   const { data: relatedVideos } = useQuery({
     queryKey: ['related-videos'],
     queryFn: async () => {
@@ -72,10 +73,7 @@ const VideoPlayer = () => {
   const { data: articles } = useQuery({
     queryKey: ['sidebar-articles'],
     queryFn: async () => {
-      const url = 'https://kakofm.net/wp-json/wp/v2/posts?_embed&per_page=5';
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Erreur lors du chargement des articles');
-      return response.json();
+      return fetchPosts({ perPage: 5 });
     },
   });
 
@@ -104,7 +102,7 @@ const VideoPlayer = () => {
   };
 
   const handleShare = () => {
-    const videoUrl = `https://kakofm.net/video/${videoId}`;
+    const videoUrl = `https://expovertmedia.net/video/${videoId}`;
     navigator.clipboard.writeText(videoUrl);
     toast({
       title: "Lien copié !",
@@ -254,7 +252,7 @@ const VideoPlayer = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
-                      <h3 className="font-semibold text-gray-900">KAKO FM</h3>
+                      <h3 className="font-semibold text-gray-900">Expo Vert Média</h3>
                       <Button size="sm" className="gradient-kako text-white self-start">
                         S'abonner
                       </Button>
@@ -337,7 +335,7 @@ const VideoPlayer = () => {
 
         {/* Related Videos Section */}
         <div className="mt-8 lg:mt-12">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">Autres vidéos de KAKO FM</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">Autres vidéos de Expo Vert Média</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {relatedVideos?.items?.filter((item: any) => item.id.videoId !== videoId).map((item: any) => (
               <Card key={item.id.videoId} className="hover-lift cursor-pointer" onClick={() => navigate(`/video/${item.id.videoId}`)}>
@@ -352,7 +350,7 @@ const VideoPlayer = () => {
                   <h4 className="font-semibold text-sm line-clamp-2 mb-2">
                     {item.snippet.title}
                   </h4>
-                  <p className="text-xs text-gray-600 mb-1">KAKO FM</p>
+                  <p className="text-xs text-gray-600 mb-1">Expo Vert Média</p>
                   <div className="flex items-center space-x-2 text-xs text-gray-500">
                     <span>{formatDate(item.snippet.publishedAt)}</span>
                   </div>
@@ -369,7 +367,7 @@ const VideoPlayer = () => {
                   <h4 className="font-semibold text-sm line-clamp-2 mb-2">
                     Chargement des vidéos...
                   </h4>
-                  <p className="text-xs text-gray-600 mb-1">KAKO FM</p>
+                  <p className="text-xs text-gray-600 mb-1">Expo Vert Média</p>
                   <div className="flex items-center space-x-2 text-xs text-gray-500">
                     <span>Récent</span>
                   </div>
