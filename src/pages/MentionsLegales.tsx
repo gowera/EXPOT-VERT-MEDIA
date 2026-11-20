@@ -28,7 +28,7 @@ const MentionsLegales = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">2. Directeur de la publication</h2>
               <div className="text-muted-foreground space-y-2">
-                <p><strong>Responsable éditorial :</strong> Direction de RTCT Goma</p>
+                <p><strong>Responsable éditorial :</strong> Direction de Expo Vert Média</p>
                 <p><strong>Email :</strong> contact@radiotayna.com</p>
               </div>
             </section>
@@ -44,7 +44,7 @@ const MentionsLegales = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">4. Propriété intellectuelle</h2>
               <p className="text-muted-foreground leading-relaxed">
-                L'ensemble du contenu présent sur ce site web est la propriété exclusive de RTCT Goma, sauf mention contraire. Toute reproduction est interdite sans autorisation écrite préalable.
+                L'ensemble du contenu présent sur ce site web est la propriété exclusive de Expo Vert Média, sauf mention contraire. Toute reproduction est interdite sans autorisation écrite préalable.
               </p>
             </section>
 
@@ -58,7 +58,7 @@ const MentionsLegales = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">6. Protection des données personnelles</h2>
               <p className="text-muted-foreground leading-relaxed">
-                RTCT Goma s'engage à protéger la vie privée des utilisateurs de son site. Aucune information personnelle n'est collectée à l'insu des utilisateurs, ni cédée à des tiers.
+                Expo Vert Média s'engage à protéger la vie privée des utilisateurs de son site. Aucune information personnelle n'est collectée à l'insu des utilisateurs, ni cédée à des tiers.
               </p>
             </section>
 
@@ -73,7 +73,7 @@ const MentionsLegales = () => {
               <h2 className="text-2xl font-semibold mb-4">8. Contact</h2>
               <div className="text-muted-foreground space-y-2">
                 <p><strong>Par email :</strong> contact@radiotayna.com</p>
-                <p><strong>Par courrier :</strong> RTCT Goma, Ville de Goma, Nord-Kivu, RDC</p>
+                <p><strong>Par courrier :</strong> Expo Vert Média, Ville de Goma, Nord-Kivu, RDC</p>
               </div>
             </section>
           </CardContent>

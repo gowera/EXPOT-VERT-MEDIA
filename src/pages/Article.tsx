@@ -8,9 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Calendar, Clock, User, Share2, Facebook, Twitter, MessageCircle, Copy, ArrowLeft, Send } from 'lucide-react';
+import { fetchPosts, fetchPostBySlug } from '@/lib/articles';
 import { Link } from 'react-router-dom';
-import ArticleAd from '@/components/ArticleAd';
-import SidebarAd from '@/components/SidebarAd';
 
 interface WordPressPost {
   id: number;
@@ -34,27 +33,17 @@ const Article = () => {
 
   const { data: article, isLoading, error } = useQuery({
     queryKey: ['article', slug],
-    queryFn: async () => {
-      const response = await fetch(`https://radiotayna.com/wp-json/wp/v2/posts?slug=${slug}&_embed`);
-      if (!response.ok) throw new Error('Article non trouvé');
-      const data = await response.json();
-      if (data.length === 0) throw new Error('Article non trouvé');
-      return data[0] as WordPressPost;
-    },
+    queryFn: () => fetchPostBySlug(slug!) as unknown as Promise<WordPressPost>,
     enabled: !!slug,
   });
 
   const { data: relatedArticles } = useQuery({
     queryKey: ['related-articles'],
-    queryFn: async () => {
-      const response = await fetch('https://radiotayna.com/wp-json/wp/v2/posts?_embed&per_page=3');
-      if (!response.ok) throw new Error('Erreur lors du chargement des articles');
-      return response.json() as Promise<WordPressPost[]>;
-    },
+    queryFn: () => fetchPosts({ perPage: 4 }) as unknown as Promise<WordPressPost[]>,
   });
 
-  const shareUrl = `https://radiotayna.com/article/${slug}`;
-  const shareTitle = article?.title.rendered || 'Article RTCT';
+  const shareUrl = `https://expovertmedia.net/article/${slug}`;
+  const shareTitle = article?.title.rendered || 'Article Expo Vert Média';
 
   const handleShare = (platform: string) => {
     let url = '';
@@ -183,8 +172,6 @@ const Article = () => {
               <div className="text-gray-800 leading-relaxed article-content" dangerouslySetInnerHTML={{ __html: article.content.rendered }} />
             </article>
 
-            <ArticleAd />
-
             <Card className="mt-12">
               <CardContent className="p-6">
                 <h3 className="text-2xl font-bold mb-6">Laisser un commentaire</h3>
@@ -213,7 +200,6 @@ const Article = () => {
           </div>
 
           <div className="lg:col-span-1 space-y-6">
-            <SidebarAd />
             
             {relatedArticles && (
               <Card className="sticky top-24">
@@ -255,7 +241,7 @@ const Article = () => {
         <footer className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="text-sm text-gray-600">
-              Publié le {new Date(article.date).toLocaleDateString('fr-FR')} par RTCT Goma
+              Publié le {new Date(article.date).toLocaleDateString('fr-FR')} par Expo Vert Média
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-600">Partager :</span>
@@ -268,7 +254,7 @@ const Article = () => {
 
         <Card className="mt-12 gradient-rtct text-white">
           <CardContent className="p-8 text-center">
-            <h3 className="text-2xl font-bold mb-4">Restez connecté avec RTCT Goma</h3>
+            <h3 className="text-2xl font-bold mb-4">Restez connecté avec Expo Vert Média</h3>
             <p className="mb-6 opacity-90">
               Découvrez nos derniers articles, émissions et contenus exclusifs
             </p>

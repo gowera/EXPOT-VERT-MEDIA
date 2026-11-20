@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Mail, Twitter, Instagram, Linkedin, Mic, Headphones, Camera, Settings } from 'lucide-react';
-import logoRtct from '@/assets/logo-rtct.png';
+import logoRtct from '@/assets/logo-evm.png';
 
 const Equipe = () => {
   const direction = [
@@ -31,7 +31,7 @@ const Equipe = () => {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Notre Équipe</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Rencontrez les voix et les talents qui donnent vie à RTCT Goma chaque jour
+            Rencontrez les voix et les talents qui donnent vie à Expo Vert Média chaque jour
           </p>
         </div>
 

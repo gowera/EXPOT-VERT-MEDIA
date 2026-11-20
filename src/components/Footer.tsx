@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import logoRtct from '@/assets/logo-rtct.png';
+import logoRtct from '@/assets/logo-evm.png';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -57,8 +57,8 @@ const Footer = () => {
           {/* Logo et Description */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <img src={logoRtct} alt="RTCT Goma" className="h-10 w-auto" />
-              <span className="text-xl font-bold">RTCT Goma</span>
+              <img src={logoRtct} alt="Expo Vert Média" className="h-10 w-auto" />
+              <span className="text-xl font-bold">Expo Vert Média</span>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
               Radio Télévision Communautaire Tayna - 88.1 MHz. Sensibilisation des communautés à la conservation de l'environnement dans l'Est du Congo.
@@ -165,7 +165,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">
-              © 2025 RTCT Goma - Radio Télévision Communautaire Tayna. Tous droits réservés.
+              © 2025 Expo Vert Média - Radio Télévision Communautaire Tayna. Tous droits réservés.
             </p>
             <p className="text-gray-400 text-sm">88.1 MHz • Goma, Nord-Kivu</p>
           </div>

@@ -22,21 +22,21 @@ const ConditionsUtilisation = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">2. Description du service</h2>
               <p className="text-muted-foreground leading-relaxed">
-                RTCT Goma (Radio Télévision Communautaire Tayna) est une radio communautaire émettant sur 88.1 MHz à Goma. Notre site web fournit des informations sur nos programmes, articles et services de diffusion en direct.
+                Expo Vert Média (Radio Télévision Communautaire Tayna) est une radio communautaire émettant sur 88.1 MHz à Goma. Notre site web fournit des informations sur nos programmes, articles et services de diffusion en direct.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-semibold mb-4">3. Propriété intellectuelle</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Tout le contenu présent sur ce site est la propriété de RTCT Goma ou de ses partenaires et est protégé par les lois sur le droit d'auteur.
+                Tout le contenu présent sur ce site est la propriété de Expo Vert Média ou de ses partenaires et est protégé par les lois sur le droit d'auteur.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-semibold mb-4">4. Limitation de responsabilité</h2>
               <p className="text-muted-foreground leading-relaxed">
-                RTCT Goma ne saurait être tenu responsable des dommages résultant de l'utilisation ou de l'impossibilité d'utiliser notre site ou nos services.
+                Expo Vert Média ne saurait être tenu responsable des dommages résultant de l'utilisation ou de l'impossibilité d'utiliser notre site ou nos services.
               </p>
             </section>
 

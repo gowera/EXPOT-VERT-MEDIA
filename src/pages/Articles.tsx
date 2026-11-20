@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Calendar, ExternalLink, Loader2, Tag, X } from 'lucide-react';
+import { fetchPosts } from '@/lib/articles';
 import { Link } from 'react-router-dom';
 import CategoriesDialog from '@/components/CategoriesDialog';
-import BannerAd from '@/components/BannerAd';
 
 interface WordPressPost {
   id: number;
@@ -32,14 +32,7 @@ const Articles = () => {
 
   const { data: articles, isLoading, error } = useQuery({
     queryKey: ['articles', page, searchTerm, selectedCategory],
-    queryFn: async () => {
-      let url = `https://radiotayna.com/wp-json/wp/v2/posts?_embed&per_page=12&page=${page}`;
-      if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
-      if (selectedCategory) url += `&categories=${selectedCategory}`;
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Erreur lors du chargement des articles');
-      return response.json() as Promise<WordPressPost[]>;
-    },
+    queryFn: () => fetchPosts({ page, perPage: 12, search: searchTerm, category: selectedCategory }) as Promise<WordPressPost[]>,
   });
 
   const handleSearch = (e: React.FormEvent) => { e.preventDefault(); setPage(1); };
@@ -55,8 +48,6 @@ const Articles = () => {
             Découvrez nos derniers articles sur l'environnement, la conservation et la communauté
           </p>
         </div>
-
-        <BannerAd />
 
         <Card className="mb-8">
           <CardContent className="p-4 sm:p-6">

@@ -8,7 +8,7 @@ const Soutenir = () => {
     window.open('https://www.paypal.com/donate', '_blank');
   };
   const handleContact = () => {
-    window.location.href = 'mailto:contact@radiotayna.com?subject=Soutien RTCT Goma';
+    window.location.href = 'mailto:contact@radiotayna.com?subject=Soutien Expo Vert Média';
   };
 
   const supportWays = [{
@@ -35,7 +35,7 @@ const Soutenir = () => {
   return <div className="min-h-screen pt-16 pb-8">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Soutenir RTCT Goma</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">Soutenir Expo Vert Média</h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
           Aidez-nous à sensibiliser les communautés à la conservation de l'environnement
         </p>
@@ -45,7 +45,7 @@ const Soutenir = () => {
         <CardContent className="p-8 md:p-12 text-white text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">🌿 Ensemble pour la conservation</h2>
           <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
-            RTCT Goma sensibilise les communautés réservoirs des aires protégées de l'Est du Congo à contribuer à la conservation de l'environnement.
+            Expo Vert Média sensibilise les communautés réservoirs des aires protégées de l'Est du Congo à contribuer à la conservation de l'environnement.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" onClick={() => handleDonation('hero')} className="bg-white text-gray-900 hover:bg-gray-100 px-8">💳 Faire un don maintenant</Button>

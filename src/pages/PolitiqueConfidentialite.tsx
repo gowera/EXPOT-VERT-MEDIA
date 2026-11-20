@@ -15,7 +15,7 @@ const PolitiqueConfidentialite = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
               <p className="text-muted-foreground leading-relaxed">
-                RTCT Goma (Radio Télévision Communautaire Tayna) s'engage à protéger votre vie privée. Cette politique explique comment nous collectons, utilisons et protégeons vos informations personnelles.
+                Expo Vert Média (Radio Télévision Communautaire Tayna) s'engage à protéger votre vie privée. Cette politique explique comment nous collectons, utilisons et protégeons vos informations personnelles.
               </p>
             </section>
 

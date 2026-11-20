@@ -3,9 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Calendar, Clock, Eye, Users, Play, ExternalLink, Download, Headphones, Phone, Mail, MapPin } from 'lucide-react';
+import { fetchPosts } from '@/lib/articles';
 import { Link } from 'react-router-dom';
-import BannerAd from '@/components/BannerAd';
-import logoRtct from '@/assets/logo-rtct.png';
+import logoRtct from '@/assets/logo-evm.png';
 
 interface WordPressPost {
   id: number;
@@ -34,11 +34,7 @@ interface YouTubeVideo {
 const Index = () => {
   const { data: articles, isLoading: articlesLoading } = useQuery({
     queryKey: ['articles', 'featured'],
-    queryFn: async () => {
-      const response = await fetch('https://radiotayna.com/wp-json/wp/v2/posts?_embed&per_page=6');
-      if (!response.ok) throw new Error('Erreur lors du chargement des articles');
-      return response.json() as Promise<WordPressPost[]>;
-    }
+    queryFn: () => fetchPosts({ perPage: 6 }) as Promise<WordPressPost[]>
   });
 
   const { data: videos, isLoading: videosLoading } = useQuery({
@@ -108,7 +104,7 @@ const Index = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
             <div className="text-center text-white">
               <div className="animate-slide-up">
-                <img src={logoRtct} alt="RTCT Goma" className="h-24 w-auto mx-auto mb-6" />
+                <img src={logoRtct} alt="Expo Vert Média" className="h-24 w-auto mx-auto mb-6" />
                 <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold mb-4 md:mb-6 tracking-wider leading-tight drop-shadow-2xl">
                   88.1 MHz
                 </h1>
@@ -188,8 +184,6 @@ const Index = () => {
         </div>
       </section>
 
-      <BannerAd />
-
       {/* Latest Videos */}
       <section className="py-8 md:py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -256,8 +250,6 @@ const Index = () => {
             </div>}
         </div>
       </section>
-
-      <BannerAd />
 
       {/* Latest Podcasts */}
       <section className="py-8 md:py-16 bg-white">
