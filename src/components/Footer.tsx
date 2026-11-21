@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { Facebook, Youtube, Mail, Phone, MapPin, Send, Twitter, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,16 +7,11 @@ import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import logoRtct from '@/assets/logo-evm.png';
 import { SITE } from '@/lib/identity';
-import { fetchPosts, plain } from '@/lib/articles';
+import { RUBRIQUES } from '@/lib/articles';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: latestArticles, isError: newsError } = useQuery({
-    queryKey: ['footer-latest-news'],
-    queryFn: () => fetchPosts({ perPage: 5 }),
-  });
-
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
@@ -60,7 +54,7 @@ const Footer = () => {
 
   return <footer className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo et Description */}
           <div className="space-y-4">
             <div className="w-full rounded-md bg-white p-3">
@@ -83,6 +77,21 @@ const Footer = () => {
                 <MessageCircle className="h-5 w-5" />
               </a>
             </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Rubriques</h3>
+            <nav className="space-y-2">
+              {RUBRIQUES.map((rubrique) => (
+                <Link
+                  key={rubrique}
+                  to={`/articles?rubrique=${encodeURIComponent(rubrique)}`}
+                  className="block text-sm text-gray-300 transition-colors hover:text-white"
+                >
+                  {rubrique}
+                </Link>
+              ))}
+            </nav>
           </div>
 
           {/* Informations légales */}
@@ -155,33 +164,6 @@ const Footer = () => {
                 )}
               </Button>
             </form>
-          </div>
-        </div>
-
-        <div className="mt-10 overflow-hidden bg-red-700 text-white" aria-label="Fil d'alerte, cinq articles récents">
-          <div className="flex items-center">
-            <span className="z-10 shrink-0 bg-red-950 px-4 py-4 text-sm font-bold uppercase tracking-wider">Alerte</span>
-            <div className="min-w-0 flex-1 overflow-hidden">
-              {newsError ? (
-                <p className="px-5 py-4 text-sm">Le fil d’actualité est temporairement indisponible.</p>
-              ) : latestArticles?.length ? (
-                <div className="footer-news-track flex w-max items-center gap-8 whitespace-nowrap px-5">
-                  {[...latestArticles, ...latestArticles].map((article, index) => (
-                    <Link
-                      key={`${article.id}-${index}`}
-                      to={`/article/${article.slug}`}
-                      aria-hidden={index >= latestArticles.length}
-                      tabIndex={index >= latestArticles.length ? -1 : undefined}
-                      className="py-4 text-sm font-semibold hover:underline"
-                    >
-                      {plain(article.title.rendered)}
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p className="px-5 py-4 text-sm">{latestArticles ? 'Aucun article récent.' : 'Chargement du fil d’actualité…'}</p>
-              )}
-            </div>
           </div>
         </div>
 
