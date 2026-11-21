@@ -65,7 +65,7 @@ const MentionsLegales = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">7. Droit applicable</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Tout litige est soumis au droit de la République Démocratique du Congo. Juridiction compétente : tribunaux de Goma, Nord-Kivu.
+                Tout litige est soumis au droit de la République Démocratique du Congo. Juridiction compétente : tribunaux de Kinshasa.
               </p>
             </section>
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, Clock, Play, MessageCircle } from 'lucide-react';
@@ -27,26 +27,28 @@ const relativeTime = (date: string) => {
 };
 
 const ArticleCard = ({ article, large = false }: { article: Post; large?: boolean }) => (
-  <article className={large ? 'grid md:grid-cols-[1.45fr_1fr] gap-0 overflow-hidden rounded-sm bg-white shadow-sm border' : 'overflow-hidden'}>
-    <Link to={`/article/${article.slug}`} className={large ? 'relative min-h-[360px]' : 'block aspect-[16/9] overflow-hidden'}>
+  <article className={large ? 'relative h-[430px] overflow-hidden rounded-sm bg-white shadow-sm' : 'overflow-hidden'}>
+    <Link to={`/article/${article.slug}`} className={large ? 'absolute inset-0' : 'block aspect-[16/9] overflow-hidden'}>
       {featuredImage(article) ? (
         <img src={featuredImage(article)} alt={plain(article.title.rendered)} loading="lazy" className="w-full h-full object-cover" />
       ) : (
         <div className="w-full h-full bg-rtct-green-dark" />
       )}
+      {large && <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />}
     </Link>
-    <div className={large ? 'p-7 md:p-9 flex flex-col justify-center' : 'py-4'}>
-      <span className="text-xs font-bold uppercase tracking-wider text-rtct-green">{firstCategory(article) || 'Actualité'}</span>
+    <div className={large ? 'absolute z-10 inset-x-0 bottom-0 p-6 md:p-9 text-white' : 'py-4'}>
+      <span className={large ? 'inline-block text-xs font-bold uppercase tracking-wider bg-rtct-green px-3 py-1 mb-3' : 'text-xs font-bold uppercase tracking-wider text-rtct-green'}>{firstCategory(article) || 'Actualité'}</span>
       <Link to={`/article/${article.slug}`}>
-        <h3 className={large ? 'text-3xl md:text-4xl font-bold leading-tight mt-3 mb-4' : 'text-lg font-bold leading-snug mt-2'}>{plain(article.title.rendered)}</h3>
+        <h3 className={large ? 'text-3xl md:text-5xl font-bold leading-tight mb-3 drop-shadow-lg' : 'text-lg font-bold leading-snug mt-2'}>{plain(article.title.rendered)}</h3>
       </Link>
-      {large && <p className="text-gray-600 mb-5 line-clamp-3">{plain(article.excerpt.rendered)}</p>}
-      <time className="text-xs text-gray-500 mt-2" dateTime={article.date}>{relativeTime(article.date)}</time>
+      {large && <p className="text-sm md:text-base text-white/90 max-w-3xl line-clamp-2 mb-2">{plain(article.excerpt.rendered)}</p>}
+      <time className={large ? 'text-xs text-white/80' : 'text-xs text-gray-500 mt-2'} dateTime={article.date}>{relativeTime(article.date)}</time>
     </div>
   </article>
 );
 
 const Index = () => {
+  const [leadIndex, setLeadIndex] = useState(0);
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ['articles', 'home'],
     queryFn: () => fetchPosts({ perPage: 24 }),
@@ -62,7 +64,17 @@ const Index = () => {
     },
   });
 
-  const [lead, ...rest] = articles;
+  useEffect(() => {
+    if (articles.length < 2) return;
+    const timer = window.setInterval(() => {
+      setLeadIndex((current) => (current + 1) % Math.min(3, articles.length));
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, [articles.length]);
+
+  const leadArticles = articles.slice(0, 3);
+  const lead = leadArticles[leadIndex] || leadArticles[0];
+  const rest = articles.slice(3);
   const categorySection = (name: string) => rest.filter((article) =>
     (firstCategory(article) || '').toLowerCase().includes(name.toLowerCase())
   ).slice(0, 3);
@@ -74,19 +86,43 @@ const Index = () => {
           <div className="h-[430px] bg-gray-100 animate-pulse" />
         ) : lead ? (
           <div className="grid lg:grid-cols-[minmax(0,2fr)_340px] gap-8">
-            <ArticleCard article={lead} large />
+            <div>
+              <ArticleCard article={lead} large />
+              {leadArticles.length > 1 && (
+                <div className="flex justify-center gap-2 mt-3">
+                  {leadArticles.map((article, index) => (
+                    <button
+                      key={article.id}
+                      type="button"
+                      aria-label={`Afficher l'article ${index + 1}`}
+                      onClick={() => setLeadIndex(index)}
+                      className={`h-2 rounded-full transition-all ${index === leadIndex ? 'w-8 bg-rtct-green' : 'w-2 bg-gray-300'}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
             <aside className="border-t-4 border-rtct-green">
               <div className="flex items-center justify-between px-1 py-3">
                 <h2 className="font-bold text-xl">Le Fil Info</h2>
                 <span className="text-xs font-semibold text-red-600 uppercase">En direct</span>
               </div>
-              <div className="divide-y">
-                {rest.slice(0, 8).map((article) => (
-                  <Link key={article.id} to={`/article/${article.slug}`} className="block py-3 group">
-                    <time className="text-xs font-bold text-rtct-green">{relativeTime(article.date)}</time>
-                    <h3 className="text-sm font-semibold leading-snug mt-1 group-hover:text-rtct-green">{plain(article.title.rendered)}</h3>
-                  </Link>
-                ))}
+              <div className="h-[390px] overflow-hidden">
+                <div className="news-ticker">
+                  {[...rest.slice(0, 8), ...rest.slice(0, 8)].map((article, index) => (
+                    <Link key={`${article.id}-${index}`} to={`/article/${article.slug}`} className="flex gap-3 py-3 border-b group">
+                      {featuredImage(article) ? (
+                        <img src={featuredImage(article)} alt="" loading="lazy" className="w-20 h-16 rounded object-cover flex-shrink-0" />
+                      ) : (
+                        <div className="w-20 h-16 rounded bg-rtct-green-dark flex-shrink-0" />
+                      )}
+                      <div className="min-w-0">
+                        <time className="text-xs font-bold text-rtct-green">{relativeTime(article.date)}</time>
+                        <h3 className="text-sm font-semibold leading-snug mt-1 line-clamp-2 group-hover:text-rtct-green">{plain(article.title.rendered)}</h3>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </aside>
           </div>

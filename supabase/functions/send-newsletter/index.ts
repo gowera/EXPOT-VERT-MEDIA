@@ -94,7 +94,7 @@ const handler = async (req: Request): Promise<Response> => {
                 </div>
                 <div class="footer">
                   <p>© 2026 Expo Vert Média - Information indépendante<br>
-                  Goma, Nord-Kivu, RDC</p>
+                  Kinshasa, RDC</p>
                   <p><a href="https://expovertmedia.net">Visitez notre site</a> | <a href="#">Se désabonner</a></p>
                 </div>
               </div>
@@ -139,7 +139,7 @@ const handler = async (req: Request): Promise<Response> => {
                 </div>
                 <div class="footer">
                   <p>© 2026 Expo Vert Média - Information indépendante<br>
-                  Goma, Nord-Kivu, RDC</p>
+                  Kinshasa, RDC</p>
                   <p><a href="https://expovertmedia.net">Visitez notre site</a> | <a href="#">Se désabonner</a></p>
                 </div>
               </div>
@@ -170,9 +170,9 @@ const handler = async (req: Request): Promise<Response> => {
             <body>
               <div class="container">
                 <div class="header">
-                  <div class="live-badge">🔴 EN DIRECT</div>
+                  <div class="live-badge">DERNIÈRE PUBLICATION</div>
                   <div class="logo">Expo Vert Média</div>
-                  <div>97.2 MHz - Votre radio engagée</div>
+                  <div>Expo Vert Média - Actualités indépendantes</div>
                 </div>
                 <div class="content">
                   <h1 class="program-name">${programName || title}</h1>
@@ -181,7 +181,7 @@ const handler = async (req: Request): Promise<Response> => {
                 </div>
                 <div class="footer">
                   <p>© 2026 Expo Vert Média - Information indépendante<br>
-                  97.2 MHz - Goma, Nord-Kivu, RDC</p>
+                  Kinshasa, RDC</p>
                   <p><a href="https://expovertmedia.net">Visitez notre site</a> | <a href="#">Se désabonner</a></p>
                 </div>
               </div>

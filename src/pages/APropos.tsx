@@ -16,7 +16,7 @@ const APropos = () => {
           <section className="mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-6">Notre Identité</h2>
             <p className="text-muted-foreground leading-relaxed">
-              <strong>Expo Vert Média</strong> est un média numérique indépendant basé à Goma, en République démocratique du Congo. Il collecte, traite et diffuse des informations vérifiées en RDC et à l’international.
+              <strong>Expo Vert Média</strong> est un média numérique indépendant basé à Kinshasa, en République démocratique du Congo. Il collecte, traite et diffuse des informations vérifiées en RDC et à l’international.
             </p>
           </section>
 

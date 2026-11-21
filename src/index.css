@@ -131,6 +131,19 @@
 }
 
 /* Loading Animation */
+.news-ticker {
+  animation: news-scroll 36s linear infinite;
+}
+
+.news-ticker:hover {
+  animation-play-state: paused;
+}
+
+@keyframes news-scroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
 .loading-dots::after {
   content: '';
   animation: dots 2s infinite;

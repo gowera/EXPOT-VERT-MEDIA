@@ -58,7 +58,9 @@ const Footer = () => {
           {/* Logo et Description */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <img src={logoRtct} alt="Expo Vert Média" className="h-10 w-auto" />
+              <div className="rounded-md bg-white p-2">
+                <img src={logoRtct} alt="Expo Vert Média" className="h-10 w-auto" />
+              </div>
               <span className="text-xl font-bold">Expo Vert Média</span>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
@@ -116,7 +118,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-gray-400" />
-                <p className="text-gray-300 text-sm">{SITE.phone}</p>
+                <a href="tel:+243970716002" className="text-gray-300 hover:text-white text-sm">{SITE.phone}</a>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-gray-400" />
@@ -167,9 +169,9 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">
-              © 2026 Expo Vert Média. Tous droits réservés.
+              © 2026 Expo Vert Média. Tous droits réservés. Fierement concus par <a href="https://oredytech.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-400 transition-colors">Oredy TECHNOLOGIES</a>.
             </p>
-            <p className="text-gray-400 text-sm">Goma, Nord-Kivu • RDC</p>
+            <p className="text-gray-400 text-sm">Kinshasa • RDC</p>
           </div>
         </div>
       </div>

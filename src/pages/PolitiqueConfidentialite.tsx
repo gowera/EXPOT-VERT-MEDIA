@@ -50,7 +50,7 @@ const PolitiqueConfidentialite = () => {
               <h2 className="text-2xl font-semibold mb-4">5. Contact</h2>
               <div className="text-muted-foreground space-y-2">
                 <p><strong>Email :</strong> contact@expovertmedia.net</p>
-                <p><strong>Adresse :</strong> Goma, Nord-Kivu, République démocratique du Congo</p>
+                <p><strong>Adresse :</strong> Kinshasa, République démocratique du Congo</p>
               </div>
             </section>
           </CardContent>
