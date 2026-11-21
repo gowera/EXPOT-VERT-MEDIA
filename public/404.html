@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expo Vert Média</title>
+  </head>
+  <body>
+    <script>
+      const current = window.location;
+      const route = current.pathname + current.search + current.hash;
+      current.replace('/?__spa_route=' + encodeURIComponent(route));
+    </script>
+  </body>
+</html>

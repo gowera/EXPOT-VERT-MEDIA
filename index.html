@@ -30,6 +30,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="theme-color" content="#0C4A1E" />
+    <script>
+      const route = new URLSearchParams(window.location.search).get('__spa_route');
+      if (route && route.startsWith('/') && !route.startsWith('//')) {
+        window.history.replaceState(null, '', route);
+      }
+    </script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HSHHF3BF51"></script>
     <script>
