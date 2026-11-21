@@ -226,7 +226,7 @@ const Article = () => {
               <div className="text-gray-800 leading-relaxed article-content" style={{ fontSize }} dangerouslySetInnerHTML={{ __html: article.content.rendered }} />
             </article>
 
-            <Card className="mt-12">
+            <Card id="comment-section" className="mt-12">
               <CardContent className="p-6">
                 <h3 className="text-2xl font-bold mb-6">Laisser un commentaire</h3>
                 <form onSubmit={handleCommentSubmit} className="space-y-4">
@@ -254,9 +254,31 @@ const Article = () => {
           </div>
 
           <div className="lg:col-span-1 space-y-6">
-            
             {relatedArticles && (
-              <Card className="sticky top-24">
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-4">Articles récents</h3>
+                  <div className="space-y-4">
+                    {relatedArticles.filter((item) => item.slug !== article.slug).slice(0, 5).map((recentArticle) => (
+                      <Link key={recentArticle.id} to={`/article/${recentArticle.slug}`} className="flex gap-3 group">
+                        <div className="w-20 h-16 shrink-0 overflow-hidden rounded bg-gray-100">
+                          {featuredImage(recentArticle) && (
+                            <img src={featuredImage(recentArticle)} alt={plain(recentArticle.title.rendered)} loading="lazy" className="h-full w-full object-cover" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="text-sm font-semibold line-clamp-2 group-hover:text-rtct-green">{plain(recentArticle.title.rendered)}</h4>
+                          <time className="mt-1 block text-xs text-gray-500" dateTime={recentArticle.date}>{relativeTime(recentArticle.date)}</time>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {relatedArticles && (
+              <Card>
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold mb-4">Sur le même sujet</h3>
                   <div className="space-y-4">
@@ -284,6 +306,14 @@ const Article = () => {
                 </CardContent>
               </Card>
             )}
+
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-2">Derniers commentaires</h3>
+                <p className="text-sm text-gray-600">Aucun commentaire publié pour le moment. Les commentaires seront affichés ici après leur mise en place et modération.</p>
+                <a href="#comment-section" className="mt-4 inline-block text-sm font-semibold text-rtct-green hover:underline">Participer à la discussion</a>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
@@ -311,7 +341,7 @@ const Article = () => {
               <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100" asChild>
                 <Link to="/articles">Plus d'articles</Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900" asChild>
+              <Button size="lg" variant="outline" className="border-white bg-transparent text-white hover:bg-white hover:text-gray-900" asChild>
                 <Link to="/soutenir">Soutenir le média</Link>
               </Button>
             </div>

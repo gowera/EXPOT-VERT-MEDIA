@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Facebook, Youtube, Mail, Phone, MapPin, Send, Twitter, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,10 +8,15 @@ import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import logoRtct from '@/assets/logo-evm.png';
 import { SITE } from '@/lib/identity';
+import { fetchPosts, plain } from '@/lib/articles';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: latestArticles, isError: newsError } = useQuery({
+    queryKey: ['footer-latest-news'],
+    queryFn: () => fetchPosts({ perPage: 5 }),
+  });
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,9 +58,9 @@ const Footer = () => {
     }
   };
 
-  return <footer className="bg-gray-900 text-white">
+  return <footer className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo et Description */}
           <div className="space-y-4">
             <div className="w-full rounded-md bg-white p-3">
@@ -77,16 +83,6 @@ const Footer = () => {
                 <MessageCircle className="h-5 w-5" />
               </a>
             </div>
-          </div>
-
-          {/* Navigation */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Navigation</h3>
-            <nav className="space-y-2">
-              <Link to="/" className="block text-gray-300 hover:text-white transition-colors text-sm">Accueil</Link>
-              <Link to="/articles" className="block text-gray-300 hover:text-white transition-colors text-sm">Articles</Link>
-              <Link to="/videos" className="block text-gray-300 hover:text-white transition-colors text-sm">Vidéos</Link>
-            </nav>
           </div>
 
           {/* Informations légales */}
@@ -162,12 +158,41 @@ const Footer = () => {
           </div>
         </div>
 
+        <div className="mt-10 overflow-hidden bg-red-700 text-white" aria-label="Fil d'alerte, cinq articles récents">
+          <div className="flex items-center">
+            <span className="z-10 shrink-0 bg-red-950 px-4 py-4 text-sm font-bold uppercase tracking-wider">Alerte</span>
+            <div className="min-w-0 flex-1 overflow-hidden">
+              {newsError ? (
+                <p className="px-5 py-4 text-sm">Le fil d’actualité est temporairement indisponible.</p>
+              ) : latestArticles?.length ? (
+                <div className="footer-news-track flex w-max items-center gap-8 whitespace-nowrap px-5">
+                  {[...latestArticles, ...latestArticles].map((article, index) => (
+                    <Link
+                      key={`${article.id}-${index}`}
+                      to={`/article/${article.slug}`}
+                      aria-hidden={index >= latestArticles.length}
+                      tabIndex={index >= latestArticles.length ? -1 : undefined}
+                      className="py-4 text-sm font-semibold hover:underline"
+                    >
+                      {plain(article.title.rendered)}
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="px-5 py-4 text-sm">{latestArticles ? 'Aucun article récent.' : 'Chargement du fil d’actualité…'}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">
-              © 2026 Expo Vert Média. Tous droits réservés. Fierement concus par <a href="https://oredytech.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-400 transition-colors">Oredy TECHNOLOGIES</a>.
+              © 2026 Expo Vert Média. Tous droits réservés.
             </p>
-            <p className="text-gray-400 text-sm">Kinshasa • RDC</p>
+            <p className="text-gray-400 text-sm">
+              Fièrement conçu par <a href="https://oredytech.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-400 transition-colors">Oredy TECHNOLOGIES</a>
+            </p>
           </div>
         </div>
       </div>

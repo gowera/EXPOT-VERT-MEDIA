@@ -159,6 +159,26 @@
   to { transform: translateY(-50%); }
 }
 
+.footer-news-track {
+  animation: footer-news-scroll 40s linear infinite;
+}
+
+.footer-news-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes footer-news-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-ticker,
+  .footer-news-track {
+    animation: none;
+  }
+}
+
 .loading-dots::after {
   content: '';
   animation: dots 2s infinite;

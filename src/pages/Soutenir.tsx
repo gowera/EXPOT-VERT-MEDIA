@@ -16,7 +16,7 @@ const Soutenir = () => (
         <p className="text-lg opacity-90 max-w-3xl mx-auto mb-8">Contribuez à des enquêtes locales, à des reportages environnementaux et à une couverture équilibrée de la RDC et du monde.</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button asChild size="lg" className="bg-white text-gray-900"><a href={`mailto:${SITE.email}?subject=Soutien à Expo Vert Média`}>Faire un don ou devenir partenaire</a></Button>
-          <Button asChild size="lg" variant="outline" className="border-white text-white"><a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">Nous écrire sur WhatsApp</a></Button>
+          <Button asChild size="lg" variant="outline" className="border-white bg-transparent text-white hover:bg-white hover:text-gray-900"><a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">Nous écrire sur WhatsApp</a></Button>
         </div>
       </CardContent></Card>
       <div className="grid md:grid-cols-4 gap-6">
