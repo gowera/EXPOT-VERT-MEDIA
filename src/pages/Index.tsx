@@ -26,8 +26,8 @@ const relativeTime = (date: string) => {
   return `Il y a ${Math.floor(hours / 24)} j`;
 };
 
-const ArticleCard = ({ article, large = false, layout = 'card' }: { article: Post; large?: boolean; layout?: 'card' | 'list' }) => (
-  <article className={large ? 'relative h-[430px] overflow-hidden rounded-sm bg-white shadow-sm' : layout === 'list' ? 'flex items-start gap-4 border-b border-gray-200 pb-4' : 'overflow-hidden'}>
+const ArticleCard = ({ article, large = false, layout = 'card', reverseImage = false }: { article: Post; large?: boolean; layout?: 'card' | 'list'; reverseImage?: boolean }) => (
+  <article className={large ? 'relative h-[430px] overflow-hidden rounded-sm bg-white shadow-sm' : layout === 'list' ? `flex items-start gap-4 border-b border-gray-200 pb-4 ${reverseImage ? 'flex-row-reverse text-right' : ''}` : 'overflow-hidden'}>
     <Link
       to={`/article/${article.slug}`}
       className={large ? 'absolute inset-0' : layout === 'list' ? 'block w-28 sm:w-40 aspect-[4/3] shrink-0 overflow-hidden' : 'block aspect-[16/9] overflow-hidden'}
@@ -85,7 +85,7 @@ const Index = () => {
   const showNextLead = () => setLeadIndex((current) => (current + 1) % Math.min(3, articles.length));
   const categorySection = (name: string) => rest.filter((article) =>
     (firstCategory(article) || '').toLowerCase().includes(name.toLowerCase())
-  ).slice(0, 3);
+  ).slice(0, 6);
 
   return (
     <div className="min-h-screen bg-white">
@@ -166,7 +166,10 @@ const Index = () => {
         { name: 'Économie et entrepreneuriat', tone: 'bg-violet-50/60', layout: 'list' as const },
       ].map(({ name: rubrique, tone, layout }) => {
         const categoryItems = categorySection(rubrique);
-        const items = categoryItems.length ? categoryItems : rest.filter((_, i) => i % 3 === RUBRIQUES.indexOf(rubrique) % 3).slice(0, 3);
+        const fallbackItems = rest.filter((article) => !categoryItems.some((item) => item.id === article.id));
+        const items = layout === 'list'
+          ? [...categoryItems, ...fallbackItems].slice(0, 6)
+          : (categoryItems.length ? categoryItems : fallbackItems).slice(0, 3);
         return (
           <section key={rubrique} className={`border-t border-gray-100 py-10 ${tone}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -179,9 +182,21 @@ const Index = () => {
                   Voir tout <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
-              <div className={layout === 'list' ? 'max-w-4xl space-y-4' : 'grid md:grid-cols-3 gap-6'}>
-                {items.map((article) => <ArticleCard key={article.id} article={article} layout={layout} />)}
-              </div>
+              {layout === 'list' ? (
+                <div className="grid md:grid-cols-2 gap-x-10 gap-y-4">
+                  {[items.slice(0, 3), items.slice(3, 6)].map((column, columnIndex) => (
+                    <div key={columnIndex} className="space-y-4">
+                      {column.map((article) => (
+                        <ArticleCard key={article.id} article={article} layout="list" reverseImage={columnIndex === 1} />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-3 gap-6">
+                  {items.map((article) => <ArticleCard key={article.id} article={article} layout="card" />)}
+                </div>
+              )}
             </div>
           </section>
         );

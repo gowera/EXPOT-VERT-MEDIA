@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Calendar, Clock, User, Share2, Facebook, Twitter, MessageCircle, Copy, ArrowLeft, Send } from 'lucide-react';
-import { fetchPosts, fetchPostBySlug, featuredImage, firstCategory, plain } from '@/lib/articles';
+import { fetchPosts, fetchPostBySlug, featuredImage, firstCategory, plain, Post } from '@/lib/articles';
 import { SITE } from '@/lib/identity';
 
 const relativeTime = (date: string) => {
@@ -21,21 +21,17 @@ const relativeTime = (date: string) => {
 };
 import { Link } from 'react-router-dom';
 
-interface WordPressPost {
-  id: number;
-  title: { rendered: string };
-  content: { rendered: string };
-  excerpt: { rendered: string };
-  date: string;
-  slug: string;
-  author: number;
-  categories: number[];
-  _embedded?: {
-    'wp:featuredmedia'?: Array<{ source_url: string; alt_text: string }>;
-    author?: Array<{ name: string }>;
-    'wp:term'?: Array<Array<{ id: number; name: string; slug: string }>>;
-  };
-}
+const topicKeys = (post: Post) => {
+  const terms = post._embedded?.['wp:term']?.flat() || [];
+  return new Set([
+    ...post.categories.map((category) => `id:${category}`),
+    ...terms.flatMap((term) => [
+      `id:${term.id}`,
+      `slug:${term.slug.toLowerCase()}`,
+      `name:${term.name.toLowerCase()}`,
+    ]),
+  ]);
+};
 
 const Article = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -44,13 +40,13 @@ const Article = () => {
 
   const { data: article, isLoading, error } = useQuery({
     queryKey: ['article', slug],
-    queryFn: () => fetchPostBySlug(slug!) as unknown as Promise<WordPressPost>,
+    queryFn: () => fetchPostBySlug(slug!),
     enabled: !!slug,
   });
 
   const { data: relatedArticles } = useQuery({
     queryKey: ['related-articles', article?.slug],
-    queryFn: () => fetchPosts({ perPage: 20 }) as unknown as Promise<WordPressPost[]>,
+    queryFn: () => fetchPosts({ perPage: 100 }),
     enabled: !!article,
   });
   const shareUrl = `https://expovertmedia.net/article/${slug}`;
@@ -68,7 +64,7 @@ const Article = () => {
       }
       meta.setAttribute('content', content);
     };
-    const image = featuredImage(article as never);
+    const image = featuredImage(article);
     setMeta('meta[property="og:title"]', 'property', plain(article.title.rendered));
     setMeta('meta[property="og:description"]', 'property', plain(article.excerpt.rendered));
     setMeta('meta[property="og:type"]', 'property', 'article');
@@ -92,6 +88,11 @@ const Article = () => {
     document.head.appendChild(schema);
   }, [article, shareUrl]);
 
+  const articleTopics = article ? topicKeys(article) : new Set<string>();
+  const matchingRelatedArticles = relatedArticles?.filter((item) =>
+    item.slug !== article?.slug &&
+    [...topicKeys(item)].some((topic) => articleTopics.has(topic))
+  ).slice(0, 5);
 
   const handleShare = (platform: string) => {
     let url = '';
@@ -259,36 +260,26 @@ const Article = () => {
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold mb-4">Sur le même sujet</h3>
                   <div className="space-y-4">
-                    {relatedArticles.filter((item) =>
-                      item.slug !== article.slug &&
-                      item._embedded?.['wp:term']?.[0]?.some((term) =>
-                        article._embedded?.['wp:term']?.[0]?.some((current) => current.id === term.id)
-                      )
-                    ).slice(0, 3).map((relatedArticle) => (
+                    {matchingRelatedArticles?.length ? matchingRelatedArticles.map((relatedArticle) => (
                       <Link key={relatedArticle.id} to={`/article/${relatedArticle.slug}`} className="block group">
                         <div className="flex gap-3">
-                          {relatedArticle._embedded?.['wp:featuredmedia']?.[0] && (
-                            <div className="w-16 h-16 relative flex-shrink-0">
-                              <img src={relatedArticle._embedded['wp:featuredmedia'][0].source_url} alt={relatedArticle.title.rendered} className="w-full h-full object-cover rounded" />
-                              {relatedArticle._embedded?.['wp:term']?.[0]?.[0] && (
-                                <div className="absolute -top-1 -left-1">
-                                  <span className="bg-rtct-green/90 text-white px-1 py-0.5 rounded text-[10px] font-medium backdrop-blur-sm">
-                                    {relatedArticle._embedded['wp:term'][0][0].name.substring(0, 8)}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          )}
+                          <div className="w-20 h-16 relative flex-shrink-0 overflow-hidden rounded bg-gray-100">
+                            {featuredImage(relatedArticle) && (
+                              <img src={featuredImage(relatedArticle)} alt={plain(relatedArticle.title.rendered)} loading="lazy" className="w-full h-full object-cover" />
+                            )}
+                          </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-semibold line-clamp-2 group-hover:text-rtct-green transition-colors" dangerouslySetInnerHTML={{ __html: relatedArticle.title.rendered }} />
-                            <p className="text-xs text-gray-600 mt-1 line-clamp-2" dangerouslySetInnerHTML={{ __html: relatedArticle.excerpt.rendered.replace(/<[^>]*>/g, '').substring(0, 80) + '...' }} />
+                            {firstCategory(relatedArticle) && <span className="text-[10px] uppercase font-semibold text-rtct-green">{firstCategory(relatedArticle)}</span>}
+                            <h4 className="text-sm font-semibold line-clamp-2 group-hover:text-rtct-green transition-colors">{plain(relatedArticle.title.rendered)}</h4>
                             <span className="text-xs text-gray-500 mt-1 block">
                               {new Date(relatedArticle.date).toLocaleDateString('fr-FR')}
                             </span>
                           </div>
                         </div>
                       </Link>
-                    ))}
+                    )) : (
+                      <p className="text-sm text-gray-600">Aucun autre article de cette rubrique pour le moment.</p>
+                    )}
                   </div>
                 </CardContent>
               </Card>

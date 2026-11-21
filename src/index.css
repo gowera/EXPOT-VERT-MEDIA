@@ -184,10 +184,15 @@
 /* Article Content Styling */
 .article-content {
   @apply max-w-none;
+  font-family: 'Oswald', sans-serif;
+}
+
+.article-content * {
+  font-family: inherit !important;
 }
 
 .article-content p {
-  @apply mb-6 leading-relaxed text-gray-700 text-base;
+  @apply mb-6 leading-relaxed text-gray-700;
 }
 
 .article-content h1, 
