@@ -36,16 +36,16 @@ const NotificationBanner = () => {
   }
 
   return (
-    <div className="bg-kako-red/10 border-l-4 border-kako-red p-4 mx-4 my-2 rounded-lg">
+    <div className="bg-rtct-green/10 border-l-4 border-rtct-green p-4 mx-4 my-2 rounded-lg">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <Bell className="h-5 w-5 text-kako-red" />
+          <Bell className="h-5 w-5 text-rtct-green" />
           <div>
             <h3 className="text-sm font-medium text-foreground">
               Restez informé en temps réel
             </h3>
             <p className="text-xs text-muted-foreground mt-1">
-              Recevez des notifications pour les nouveaux programmes et contenus
+              Recevez des notifications pour les dernières actualités et enquêtes
             </p>
           </div>
         </div>
@@ -53,7 +53,7 @@ const NotificationBanner = () => {
           <Button 
             size="sm" 
             onClick={handleEnable}
-            className="bg-kako-red hover:bg-kako-red/90"
+            className="gradient-rtct text-white"
           >
             Activer
           </Button>

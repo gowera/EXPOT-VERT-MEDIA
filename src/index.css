@@ -119,14 +119,6 @@
   background: linear-gradient(135deg, rgba(12, 74, 30, 0.1) 0%, rgba(28, 122, 52, 0.1) 50%, rgba(47, 163, 74, 0.1) 100%);
 }
 
-/* Legacy class aliases */
-.gradient-kako {
-  background: linear-gradient(135deg, #0C4A1E 0%, #1C7A34 50%, #2FA34A 100%);
-}
-
-.gradient-kako-soft {
-  background: linear-gradient(135deg, rgba(12, 74, 30, 0.1) 0%, rgba(28, 122, 52, 0.1) 50%, rgba(47, 163, 74, 0.1) 100%);
-}
 
 /* Hover Effects */
 .hover-lift {

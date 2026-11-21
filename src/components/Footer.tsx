@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Youtube, Mail, Phone, MapPin, MessageSquare, Send } from 'lucide-react';
+import { Facebook, Youtube, Mail, Phone, MapPin, Send, Twitter, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import logoRtct from '@/assets/logo-evm.png';
+import { SITE } from '@/lib/identity';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -61,17 +62,20 @@ const Footer = () => {
               <span className="text-xl font-bold">Expo Vert Média</span>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Radio Télévision Communautaire Tayna - 88.1 MHz. Sensibilisation des communautés à la conservation de l'environnement dans l'Est du Congo.
+              Média numérique indépendant dédié à l'information, aux enquêtes et à la démocratie en RDC et dans le monde.
             </p>
             <div className="flex space-x-4">
-              <a href="https://www.facebook.com/radiotayna" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-400 transition-colors">
+              <a href={SITE.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-gray-400 hover:text-green-400 transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="https://www.instagram.com/radiotayna" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-400 transition-colors">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="https://www.youtube.com/@radiotayna" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-400 transition-colors">
+              <a href={SITE.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-gray-400 hover:text-green-400 transition-colors">
                 <Youtube className="h-5 w-5" />
+              </a>
+              <a href={SITE.twitter} target="_blank" rel="noopener noreferrer" aria-label="X" className="text-gray-400 hover:text-green-400 transition-colors">
+                <Twitter className="h-5 w-5" />
+              </a>
+              <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-gray-400 hover:text-green-400 transition-colors">
+                <MessageCircle className="h-5 w-5" />
               </a>
             </div>
           </div>
@@ -83,8 +87,6 @@ const Footer = () => {
               <Link to="/" className="block text-gray-300 hover:text-white transition-colors text-sm">Accueil</Link>
               <Link to="/articles" className="block text-gray-300 hover:text-white transition-colors text-sm">Articles</Link>
               <Link to="/videos" className="block text-gray-300 hover:text-white transition-colors text-sm">Vidéos</Link>
-              <Link to="/podcasts" className="block text-gray-300 hover:text-white transition-colors text-sm">Podcasts</Link>
-              <Link to="/programmes" className="block text-gray-300 hover:text-white transition-colors text-sm">Programmes</Link>
               <Link to="/equipe" className="block text-gray-300 hover:text-white transition-colors text-sm">Équipe</Link>
             </nav>
           </div>
@@ -109,17 +111,17 @@ const Footer = () => {
               <div className="flex items-start space-x-3">
                 <MapPin className="h-4 w-4 mt-1 text-gray-400 flex-shrink-0" />
                 <p className="text-gray-300 text-sm">
-                  Ville de Goma, Nord-Kivu, RDC
+                  {SITE.address}
                 </p>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-gray-400" />
-                <p className="text-gray-300 text-sm">+243 000 000 000</p>
+                <p className="text-gray-300 text-sm">{SITE.phone}</p>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-gray-400" />
-                <a href="mailto:contact@radiotayna.com" className="text-gray-300 hover:text-white transition-colors text-sm">
-                  contact@radiotayna.com
+                <a href={`mailto:${SITE.email}`} className="text-gray-300 hover:text-white transition-colors text-sm">
+                  {SITE.email}
                 </a>
               </div>
             </div>
@@ -129,7 +131,7 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Newsletter</h3>
             <p className="text-gray-300 text-sm">
-              Recevez nos dernières actualités et programmes directement dans votre boîte email.
+              Recevez nos enquêtes, actualités et récapitulatifs directement par email.
             </p>
             <form onSubmit={handleNewsletterSubmit} className="space-y-3">
               <Input
@@ -165,9 +167,9 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">
-              © 2025 Expo Vert Média - Radio Télévision Communautaire Tayna. Tous droits réservés.
+              © 2026 Expo Vert Média. Tous droits réservés.
             </p>
-            <p className="text-gray-400 text-sm">88.1 MHz • Goma, Nord-Kivu</p>
+            <p className="text-gray-400 text-sm">Goma, Nord-Kivu • RDC</p>
           </div>
         </div>
       </div>

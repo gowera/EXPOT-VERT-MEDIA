@@ -49,8 +49,8 @@ const PolitiqueConfidentialite = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">5. Contact</h2>
               <div className="text-muted-foreground space-y-2">
-                <p><strong>Email :</strong> contact@radiotayna.com</p>
-                <p><strong>Adresse :</strong> Ville de Goma, Nord-Kivu, RDC</p>
+                <p><strong>Email :</strong> contact@expovertmedia.net</p>
+                <p><strong>Adresse :</strong> Goma, Nord-Kivu, République démocratique du Congo</p>
               </div>
             </section>
           </CardContent>

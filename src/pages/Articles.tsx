@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Calendar, ExternalLink, Loader2, Tag, X } from 'lucide-react';
-import { fetchPosts } from '@/lib/articles';
-import { Link } from 'react-router-dom';
+import { fetchPosts, RUBRIQUES } from '@/lib/articles';
+import { Link, useSearchParams } from 'react-router-dom';
 import CategoriesDialog from '@/components/CategoriesDialog';
 
 interface WordPressPost {
@@ -25,6 +25,7 @@ interface WordPressPost {
 }
 
 const Articles = () => {
+  const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -32,8 +33,17 @@ const Articles = () => {
 
   const { data: articles, isLoading, error } = useQuery({
     queryKey: ['articles', page, searchTerm, selectedCategory],
-    queryFn: () => fetchPosts({ page, perPage: 12, search: searchTerm, category: selectedCategory }) as Promise<WordPressPost[]>,
+    queryFn: () => fetchPosts({ page: 1, perPage: 150, search: searchTerm }) as Promise<WordPressPost[]>,
   });
+  const rubriqueParam = searchParams.get('rubrique');
+  const filteredArticles = articles?.filter((article) => {
+    if (!selectedCategoryName && !rubriqueParam) return true;
+    const name = selectedCategoryName || rubriqueParam || '';
+    return article._embedded?.['wp:term']?.[0]?.some((term) =>
+      term.name.toLowerCase().includes(name.toLowerCase()) ||
+      name.toLowerCase().includes(term.name.toLowerCase())
+    );
+  }).slice((page - 1) * 12, page * 12);
 
   const handleSearch = (e: React.FormEvent) => { e.preventDefault(); setPage(1); };
   const handleCategorySelect = (categoryId: number, categoryName: string) => { setSelectedCategory(categoryId); setSelectedCategoryName(categoryName); setPage(1); };
@@ -61,6 +71,19 @@ const Articles = () => {
                   <Button type="submit" className="gradient-rtct text-white w-full sm:w-auto">Rechercher</Button>
                   <CategoriesDialog onCategorySelect={handleCategorySelect} selectedCategory={selectedCategory || undefined} />
                 </div>
+              </div>
+
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {RUBRIQUES.map((rubrique) => (
+                  <button
+                    type="button"
+                    key={rubrique}
+                    onClick={() => { setSelectedCategoryName(rubrique); setPage(1); }}
+                    className={`shrink-0 px-3 py-1.5 rounded-full border text-xs font-semibold ${selectedCategoryName === rubrique ? 'bg-rtct-green text-white border-rtct-green' : 'hover:border-rtct-green'}`}
+                  >
+                    {rubrique}
+                  </button>
+                ))}
               </div>
               
               {selectedCategory && (
@@ -91,7 +114,7 @@ const Articles = () => {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-              {articles?.map((article) => (
+              {filteredArticles?.map((article) => (
                 <Card key={article.id} className="hover-lift overflow-hidden">
                   {article._embedded?.['wp:featuredmedia']?.[0] && (
                     <div className="h-48 overflow-hidden relative">
@@ -131,7 +154,7 @@ const Articles = () => {
               ))}
             </div>
 
-            {articles && articles.length === 12 && (
+            {filteredArticles && filteredArticles.length === 12 && (
               <div className="flex justify-center space-x-4">
                 <Button variant="outline" onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}>Page précédente</Button>
                 <span className="flex items-center px-4 py-2 text-gray-600">Page {page}</span>

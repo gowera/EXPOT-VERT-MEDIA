@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,7 +8,17 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Calendar, Clock, User, Share2, Facebook, Twitter, MessageCircle, Copy, ArrowLeft, Send } from 'lucide-react';
-import { fetchPosts, fetchPostBySlug } from '@/lib/articles';
+import { fetchPosts, fetchPostBySlug, featuredImage, firstCategory, plain } from '@/lib/articles';
+import { SITE } from '@/lib/identity';
+
+const relativeTime = (date: string) => {
+  const minutes = Math.max(1, Math.floor((Date.now() - new Date(date).getTime()) / 60000));
+  if (minutes < 60) return `Il y a ${minutes} minutes`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `Il y a ${hours} heure${hours > 1 ? 's' : ''}`;
+  const days = Math.floor(hours / 24);
+  return `Il y a ${days} jour${days > 1 ? 's' : ''}`;
+};
 import { Link } from 'react-router-dom';
 
 interface WordPressPost {
@@ -30,6 +40,7 @@ interface WordPressPost {
 const Article = () => {
   const { slug } = useParams<{ slug: string }>();
   const [commentForm, setCommentForm] = useState({ name: '', email: '', message: '' });
+  const [fontSize, setFontSize] = useState(18);
 
   const { data: article, isLoading, error } = useQuery({
     queryKey: ['article', slug],
@@ -38,12 +49,49 @@ const Article = () => {
   });
 
   const { data: relatedArticles } = useQuery({
-    queryKey: ['related-articles'],
-    queryFn: () => fetchPosts({ perPage: 4 }) as unknown as Promise<WordPressPost[]>,
+    queryKey: ['related-articles', article?.slug],
+    queryFn: () => fetchPosts({ perPage: 20 }) as unknown as Promise<WordPressPost[]>,
+    enabled: !!article,
   });
-
   const shareUrl = `https://expovertmedia.net/article/${slug}`;
   const shareTitle = article?.title.rendered || 'Article Expo Vert Média';
+
+  useEffect(() => {
+    if (!article) return;
+    document.title = `${plain(article.title.rendered)} | Expo Vert Média`;
+    const setMeta = (selector: string, attr: string, content: string) => {
+      let meta = document.querySelector(selector);
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute(attr === 'property' ? 'property' : 'name', attr);
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', content);
+    };
+    const image = featuredImage(article as never);
+    setMeta('meta[property="og:title"]', 'property', plain(article.title.rendered));
+    setMeta('meta[property="og:description"]', 'property', plain(article.excerpt.rendered));
+    setMeta('meta[property="og:type"]', 'property', 'article');
+    if (image) setMeta('meta[property="og:image"]', 'property', image);
+
+    const schema = document.createElement('script');
+    schema.type = 'application/ld+json';
+    schema.id = 'article-news-schema';
+    schema.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'NewsArticle',
+      headline: plain(article.title.rendered),
+      datePublished: article.date,
+      author: { '@type': 'Organization', name: 'Expo Vert Média' },
+      publisher: { '@type': 'Organization', name: 'Expo Vert Média' },
+      image: image ? [image] : [],
+      description: plain(article.excerpt.rendered),
+      mainEntityOfPage: shareUrl,
+    });
+    document.getElementById('article-news-schema')?.remove();
+    document.head.appendChild(schema);
+  }, [article, shareUrl]);
+
 
   const handleShare = (platform: string) => {
     let url = '';
@@ -117,7 +165,12 @@ const Article = () => {
           <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 mb-6">
             <div className="flex items-center space-x-2">
               <Calendar className="h-4 w-4" />
-              <span>{new Date(article.date).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <span>{relativeTime(article.date)} · {new Date(article.date).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </div>
+            <div className="flex items-center gap-2"><Clock className="h-4 w-4" /><span>{Math.max(1, Math.ceil(plain(article.content.rendered).split(/\s+/).length / 180))} min de lecture</span></div>
+            <div className="ml-auto flex items-center gap-1 border rounded-md p-1">
+              <button type="button" aria-label="Réduire la taille du texte" className="px-2 py-1 text-sm" onClick={() => setFontSize((size) => Math.max(15, size - 1))}>A-</button>
+              <button type="button" aria-label="Augmenter la taille du texte" className="px-2 py-1 text-sm font-bold" onClick={() => setFontSize((size) => Math.min(24, size + 1))}>A+</button>
             </div>
             {article._embedded?.author?.[0] && (
               <div className="flex items-center space-x-2">
@@ -169,7 +222,7 @@ const Article = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <article className="prose prose-lg max-w-none">
-              <div className="text-gray-800 leading-relaxed article-content" dangerouslySetInnerHTML={{ __html: article.content.rendered }} />
+              <div className="text-gray-800 leading-relaxed article-content" style={{ fontSize }} dangerouslySetInnerHTML={{ __html: article.content.rendered }} />
             </article>
 
             <Card className="mt-12">
@@ -204,9 +257,14 @@ const Article = () => {
             {relatedArticles && (
               <Card className="sticky top-24">
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-4">À lire aussi</h3>
+                  <h3 className="text-xl font-bold mb-4">Sur le même sujet</h3>
                   <div className="space-y-4">
-                    {relatedArticles.slice(0, 3).map((relatedArticle) => (
+                    {relatedArticles.filter((item) =>
+                      item.slug !== article.slug &&
+                      item._embedded?.['wp:term']?.[0]?.some((term) =>
+                        article._embedded?.['wp:term']?.[0]?.some((current) => current.id === term.id)
+                      )
+                    ).slice(0, 3).map((relatedArticle) => (
                       <Link key={relatedArticle.id} to={`/article/${relatedArticle.slug}`} className="block group">
                         <div className="flex gap-3">
                           {relatedArticle._embedded?.['wp:featuredmedia']?.[0] && (
@@ -263,11 +321,17 @@ const Article = () => {
                 <Link to="/articles">Plus d'articles</Link>
               </Button>
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900" asChild>
-                <Link to="/">🎧 Écouter en direct</Link>
+                <Link to="/soutenir">Soutenir le média</Link>
               </Button>
             </div>
           </CardContent>
         </Card>
+        <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t bg-white/95 backdrop-blur px-4 py-2 flex items-center justify-around">
+          <button aria-label="Partager sur WhatsApp" onClick={() => handleShare('whatsapp')}><MessageCircle className="h-5 w-5" /></button>
+          <button aria-label="Partager sur Facebook" onClick={() => handleShare('facebook')}><Facebook className="h-5 w-5" /></button>
+          <button aria-label="Partager sur X" onClick={() => handleShare('twitter')}><Twitter className="h-5 w-5" /></button>
+          <button aria-label="Copier le lien" onClick={() => handleShare('copy')}><Copy className="h-5 w-5" /></button>
+        </div>
       </div>
     </div>
   );

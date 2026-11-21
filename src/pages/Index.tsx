@@ -1,25 +1,11 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ArrowRight, Calendar, Clock, Eye, Users, Play, ExternalLink, Download, Headphones, Phone, Mail, MapPin } from 'lucide-react';
-import { fetchPosts } from '@/lib/articles';
 import { Link } from 'react-router-dom';
-import logoRtct from '@/assets/logo-evm.png';
-
-interface WordPressPost {
-  id: number;
-  title: { rendered: string };
-  excerpt: { rendered: string };
-  date: string;
-  link: string;
-  slug: string;
-  categories: number[];
-  _embedded?: {
-    'wp:featuredmedia'?: Array<{ source_url: string; alt_text: string }>;
-    'wp:term'?: Array<Array<{ id: number; name: string; slug: string }>>;
-  };
-}
+import { ArrowRight, Calendar, Clock, Play, MessageCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { fetchPosts, featuredImage, firstCategory, plain, Post, RUBRIQUES } from '@/lib/articles';
+import { SITE } from '@/lib/identity';
 
 interface YouTubeVideo {
   id: { videoId: string };
@@ -31,304 +17,143 @@ interface YouTubeVideo {
   };
 }
 
+const relativeTime = (date: string) => {
+  const diff = Date.now() - new Date(date).getTime();
+  const minutes = Math.max(1, Math.floor(diff / 60000));
+  if (minutes < 60) return `Il y a ${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `Il y a ${hours} h`;
+  return `Il y a ${Math.floor(hours / 24)} j`;
+};
+
+const ArticleCard = ({ article, large = false }: { article: Post; large?: boolean }) => (
+  <article className={large ? 'grid md:grid-cols-[1.45fr_1fr] gap-0 overflow-hidden rounded-sm bg-white shadow-sm border' : 'overflow-hidden'}>
+    <Link to={`/article/${article.slug}`} className={large ? 'relative min-h-[360px]' : 'block aspect-[16/9] overflow-hidden'}>
+      {featuredImage(article) ? (
+        <img src={featuredImage(article)} alt={plain(article.title.rendered)} loading="lazy" className="w-full h-full object-cover" />
+      ) : (
+        <div className="w-full h-full bg-rtct-green-dark" />
+      )}
+    </Link>
+    <div className={large ? 'p-7 md:p-9 flex flex-col justify-center' : 'py-4'}>
+      <span className="text-xs font-bold uppercase tracking-wider text-rtct-green">{firstCategory(article) || 'Actualité'}</span>
+      <Link to={`/article/${article.slug}`}>
+        <h3 className={large ? 'text-3xl md:text-4xl font-bold leading-tight mt-3 mb-4' : 'text-lg font-bold leading-snug mt-2'}>{plain(article.title.rendered)}</h3>
+      </Link>
+      {large && <p className="text-gray-600 mb-5 line-clamp-3">{plain(article.excerpt.rendered)}</p>}
+      <time className="text-xs text-gray-500 mt-2" dateTime={article.date}>{relativeTime(article.date)}</time>
+    </div>
+  </article>
+);
+
 const Index = () => {
-  const { data: articles, isLoading: articlesLoading } = useQuery({
-    queryKey: ['articles', 'featured'],
-    queryFn: () => fetchPosts({ perPage: 6 }) as Promise<WordPressPost[]>
+  const { data: articles = [], isLoading } = useQuery({
+    queryKey: ['articles', 'home'],
+    queryFn: () => fetchPosts({ perPage: 24 }),
   });
 
-  const { data: videos, isLoading: videosLoading } = useQuery({
+  const { data: videos = [] } = useQuery({
     queryKey: ['youtube-videos-home'],
     queryFn: async () => {
-      const API_KEY = 'AIzaSyAm1eWQTfpnRIPKIPw4HTZDOgWuciITktI';
-      const CHANNEL_ID = 'UCFG9Mr12mxqs82snzRXbjeg';
-      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&type=video&maxResults=3`;
-      const response = await fetch(url);
+      const response = await fetch(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyAm1eWQTfpnRIPKIPw4HTZDOgWuciITktI&channelId=UCFG9Mr12mxqs82snzRXbjeg&part=snippet,id&order=date&type=video&maxResults=3`);
       if (!response.ok) throw new Error('Erreur lors du chargement des vidéos');
       const data = await response.json();
-      return data.items as YouTubeVideo[];
-    }
+      return (data.items || []) as YouTubeVideo[];
+    },
   });
 
-  const podcasts = [{
-    id: 1,
-    title: "RTCT Talk - L'actualité environnementale",
-    description: "Chaque semaine, notre équipe décrypte l'actualité environnementale et la conservation.",
-    duration: "45 min",
-    date: "2024-01-10",
-    imageUrl: logoRtct,
-    category: "Environnement"
-  }, {
-    id: 2,
-    title: "Nature & Culture",
-    description: "Découverte de la biodiversité et des traditions locales.",
-    duration: "35 min",
-    date: "2024-01-08",
-    imageUrl: logoRtct,
-    category: "Culture"
-  }, {
-    id: 3,
-    title: "Communauté & Conservation",
-    description: "Focus sur les initiatives communautaires pour la protection de l'environnement.",
-    duration: "40 min",
-    date: "2024-01-05",
-    imageUrl: logoRtct,
-    category: "Conservation"
-  }];
+  const [lead, ...rest] = articles;
+  const categorySection = (name: string) => rest.filter((article) =>
+    (firstCategory(article) || '').toLowerCase().includes(name.toLowerCase())
+  ).slice(0, 3);
 
-  const handleLiveRadio = () => {
-    const audioPlayer = document.querySelector('audio');
-    if (audioPlayer) {
-      if (audioPlayer.paused) {
-        audioPlayer.play();
-      }
-    }
-  };
+  return (
+    <div className="min-h-screen bg-white">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {isLoading ? (
+          <div className="h-[430px] bg-gray-100 animate-pulse" />
+        ) : lead ? (
+          <div className="grid lg:grid-cols-[minmax(0,2fr)_340px] gap-8">
+            <ArticleCard article={lead} large />
+            <aside className="border-t-4 border-rtct-green">
+              <div className="flex items-center justify-between px-1 py-3">
+                <h2 className="font-bold text-xl">Le Fil Info</h2>
+                <span className="text-xs font-semibold text-red-600 uppercase">En direct</span>
+              </div>
+              <div className="divide-y">
+                {rest.slice(0, 8).map((article) => (
+                  <Link key={article.id} to={`/article/${article.slug}`} className="block py-3 group">
+                    <time className="text-xs font-bold text-rtct-green">{relativeTime(article.date)}</time>
+                    <h3 className="text-sm font-semibold leading-snug mt-1 group-hover:text-rtct-green">{plain(article.title.rendered)}</h3>
+                  </Link>
+                ))}
+              </div>
+            </aside>
+          </div>
+        ) : (
+          <div className="py-16 text-center text-gray-600">Aucun article disponible pour le moment.</div>
+        )}
+      </section>
 
-  const formatDuration = (publishedAt: string) => {
-    const date = new Date(publishedAt);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    if (diffDays === 1) return 'Hier';
-    if (diffDays < 7) return `Il y a ${diffDays} jours`;
-    if (diffDays < 30) return `Il y a ${Math.ceil(diffDays / 7)} semaines`;
-    return `Il y a ${Math.ceil(diffDays / 30)} mois`;
-  };
-
-  return <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="min-h-[70vh] flex items-center relative">
-          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-rtct-green-dark via-rtct-green to-rtct-green-light"></div>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-            <div className="text-center text-white">
-              <div className="animate-slide-up">
-                <img src={logoRtct} alt="Expo Vert Média" className="h-24 w-auto mx-auto mb-6" />
-                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold mb-4 md:mb-6 tracking-wider leading-tight drop-shadow-2xl">
-                  88.1 MHz
-                </h1>
-                <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 drop-shadow-xl">
-                  RTCT GOMA
-                </h2>
-                <p className="text-base md:text-lg lg:text-xl mb-6 md:mb-8 opacity-90 max-w-3xl mx-auto drop-shadow-lg">
-                  Radio Télévision Communautaire Tayna - Pour la conservation de l'environnement
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto">
-                  <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-3 text-sm md:text-base shadow-xl hover:shadow-2xl transition-shadow" onClick={handleLiveRadio}>
-                    🎧 Écouter en direct
-                  </Button>
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 px-4 py-3 text-sm md:text-base bg-transparent shadow-xl hover:shadow-2xl transition-shadow" asChild>
-                    <Link to="/programmes">Voir les Programmes</Link>
-                  </Button>
-                </div>
+      {[
+        'Environnement et climat',
+        'Politique et gouvernance',
+        'Société et droits humains',
+        'Économie et entrepreneuriat',
+      ].map((rubrique) => {
+        const items = categorySection(rubrique).length ? categorySection(rubrique) : rest.filter((_, i) => i % 3 === RUBRIQUES.indexOf(rubrique) % 3).slice(0, 3);
+        return (
+          <section key={rubrique} className="border-t py-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl md:text-3xl font-bold">{rubrique}</h2>
+                <Link to={`/articles?rubrique=${encodeURIComponent(rubrique)}`} className="text-sm font-semibold text-rtct-green flex items-center gap-1">
+                  Voir tout <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                {items.map((article) => <ArticleCard key={article.id} article={article} />)}
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
+        );
+      })}
 
-      {/* Latest Articles */}
-      <section className="py-8 md:py-16 bg-white">
+      <section className="bg-gray-950 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 md:mb-12 gap-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Derniers Articles</h2>
-            <Button variant="outline" asChild className="shrink-0">
-              <Link to="/articles" className="flex items-center space-x-2">
-                <span>Voir tous</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold">Reportages vidéo</h2>
+            <Link to="/videos" className="text-sm font-semibold flex items-center gap-1">Toutes les vidéos <ArrowRight className="h-4 w-4" /></Link>
           </div>
-
-          {articlesLoading ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {[...Array(6)].map((_, i) => <Card key={i} className="hover-lift">
-                  <div className="h-48 bg-gray-200 animate-pulse"></div>
-                  <CardContent className="p-4 md:p-6">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
-                  </CardContent>
-                </Card>)}
-            </div> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {articles?.slice(0, 6).map(article => <Card key={article.id} className="hover-lift overflow-hidden">
-                  {article._embedded?.['wp:featuredmedia']?.[0] && <div className="h-48 overflow-hidden relative">
-                      <img src={article._embedded['wp:featuredmedia'][0].source_url} alt={article._embedded['wp:featuredmedia'][0].alt_text || article.title.rendered} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-                      {article._embedded?.['wp:term']?.[0]?.[0] && (
-                        <div className="absolute top-3 left-3">
-                          <span className="bg-rtct-green/90 text-white px-2 py-1 rounded-md text-xs font-medium backdrop-blur-sm">
-                            {article._embedded['wp:term'][0][0].name}
-                          </span>
-                        </div>
-                      )}
-                    </div>}
-                  <CardContent className="p-4 md:p-6">
-                    <h3 className="font-semibold text-base md:text-lg mb-2 line-clamp-2">
-                      {article.title.rendered}
-                    </h3>
-                    <div className="text-gray-600 text-sm mb-4 line-clamp-3" dangerouslySetInnerHTML={{
-                __html: article.excerpt.rendered.replace(/<[^>]*>/g, '')
-              }} />
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500">
-                        {new Date(article.date).toLocaleDateString('fr-FR')}
-                      </span>
-                      <Button size="sm" variant="outline" asChild>
-                        <Link to={`/article/${article.slug}`}>
-                          Lire plus
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>)}
-            </div>}
-        </div>
-      </section>
-
-      {/* Latest Videos */}
-      <section className="py-8 md:py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 md:mb-12 gap-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Dernières Vidéos</h2>
-            <Button variant="outline" asChild className="shrink-0">
-              <Link to="/videos" className="flex items-center space-x-2">
-                <span>Voir toutes</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-
-          {videosLoading ? <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-              {[...Array(3)].map((_, i) => <Card key={i} className="hover-lift">
-                  <div className="h-48 bg-gray-200 animate-pulse"></div>
-                  <CardContent className="p-4 md:p-6">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
-                  </CardContent>
-                </Card>)}
-            </div> : <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-              {videos?.map(video => <Card key={video.id.videoId} className="hover-lift overflow-hidden">
-                  <div className="relative group">
-                    <img src={video.snippet.thumbnails.medium.url} alt={video.snippet.title} className="w-full h-48 object-cover" />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <Button size="lg" className="bg-white/90 text-gray-900 hover:bg-white" asChild>
-                        <Link to={`/video/${video.id.videoId}`}>
-                          <Play className="h-5 w-5 mr-2" />
-                          Regarder
-                        </Link>
-                      </Button>
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="bg-black/70 rounded-full p-3 opacity-80">
-                        <Play className="h-8 w-8 text-white ml-1" />
-                      </div>
-                    </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {videos.map((video) => (
+              <Link key={video.id.videoId} to={`/video/${video.id.videoId}`} className="group">
+                <div className="relative aspect-video overflow-hidden">
+                  <img src={video.snippet.thumbnails.medium.url} alt={video.snippet.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                    <span className="rounded-full bg-white/90 p-3"><Play className="h-5 w-5 text-gray-950 fill-current" /></span>
                   </div>
-                  
-                  <CardContent className="p-4 md:p-6">
-                    <h3 className="font-semibold text-base md:text-lg mb-2 line-clamp-2">
-                      {video.snippet.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      {video.snippet.description}
-                    </p>
-                    
-                    <div className="flex justify-between items-center text-xs text-gray-500 mb-4">
-                      <div className="flex items-center space-x-1">
-                        <Calendar className="h-3 w-3" />
-                        <span>{formatDuration(video.snippet.publishedAt)}</span>
-                      </div>
-                    </div>
-                    
-                    <Button size="sm" className="w-full gradient-rtct text-white" asChild>
-                      <Link to={`/video/${video.id.videoId}`}>
-                        <Play className="h-4 w-4 mr-1" />
-                        Regarder
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>)}
-            </div>}
-        </div>
-      </section>
-
-      {/* Latest Podcasts */}
-      <section className="py-8 md:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Derniers Podcasts</h2>
-            <Button variant="outline" asChild>
-              <Link to="/podcasts" className="flex items-center space-x-2">
-                <span>Voir tous</span>
-                <ArrowRight className="h-4 w-4" />
+                </div>
+                <h3 className="font-semibold mt-3 line-clamp-2">{video.snippet.title}</h3>
               </Link>
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {podcasts.map(podcast => <Card key={podcast.id} className="hover-lift">
-                <CardContent className="p-6">
-                  <div className="flex gap-4 mb-4">
-                    <div className="w-20 h-20 flex-shrink-0">
-                      <img src={podcast.imageUrl} alt={podcast.title} className="w-full h-full object-cover rounded-lg" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-rtct-green/10 text-rtct-green px-2 py-1 rounded-full text-xs font-medium">
-                          {podcast.category}
-                        </span>
-                      </div>
-                      <h3 className="font-semibold text-lg mb-1 line-clamp-1">
-                        {podcast.title}
-                      </h3>
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <div className="flex items-center space-x-1">
-                          <Clock className="h-3 w-3" />
-                          <span>{podcast.duration}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Calendar className="h-3 w-3" />
-                          <span>{new Date(podcast.date).toLocaleDateString('fr-FR')}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                    {podcast.description}
-                  </p>
-                  <div className="flex gap-2">
-                    <Button size="sm" className="flex-1 gradient-rtct text-white">
-                      <Play className="h-4 w-4 mr-1" />
-                      Écouter
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <Download className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>)}
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-8 md:py-16 gradient-rtct">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Rejoignez la communauté RTCT
-          </h2>
-          <p className="text-xl text-white/90 mb-8">
-            Ensemble pour la conservation de l'environnement et le développement communautaire
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100" asChild>
-              <Link to="/soutenir">🌿 Soutenir RTCT</Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 bg-transparent" asChild>
-              <Link to="/contact">📞 Nous contacter</Link>
-            </Button>
+      <section className="py-10 bg-rtct-green-soft">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-5">
+          <div>
+            <h2 className="text-2xl font-bold">Envoyez une information à la rédaction</h2>
+            <p className="text-gray-600 mt-1">Partagez un fait, une photo ou un témoignage depuis le terrain.</p>
           </div>
+          <Button asChild className="gradient-rtct text-white">
+            <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-4 w-4 mr-2" />Alerter la rédaction</a>
+          </Button>
         </div>
       </section>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;

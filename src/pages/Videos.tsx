@@ -106,7 +106,7 @@ const Videos = () => {
         {/* Videos Grid */}
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-kako-blue" />
+            <Loader2 className="h-8 w-8 animate-spin text-rtct-green" />
             <span className="ml-2 text-gray-600">Chargement des vidéos...</span>
           </div>
         ) : error ? (
@@ -164,7 +164,7 @@ const Videos = () => {
                   <div className="flex gap-2">
                     <Button
                       size="sm"
-                      className="flex-1 gradient-kako text-white"
+                      className="flex-1 gradient-rtct text-white"
                       onClick={() => handleWatchVideo(video.id.videoId)}
                     >
                       <Play className="h-4 w-4 mr-1" />
@@ -186,7 +186,7 @@ const Videos = () => {
 
         {/* CTA Section */}
         <div className="text-center mt-16">
-          <Card className="gradient-kako-soft">
+          <Card className="gradient-rtct-soft">
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold mb-4">Suivez-nous sur YouTube</h3>
               <p className="text-gray-600 mb-6">

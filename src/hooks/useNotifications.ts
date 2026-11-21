@@ -66,7 +66,7 @@ export const useNotifications = () => {
           type: 'SHOW_NOTIFICATION',
           title: options.title,
           body: options.body,
-          tag: options.tag || 'kako-fm',
+          tag: options.tag || 'expo-vert-media',
           icon: options.icon
         });
         return true;

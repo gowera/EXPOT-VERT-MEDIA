@@ -1,0 +1,13 @@
+{
+  "name": "Expo Vert Média",
+  "short_name": "Expo Vert",
+  "description": "Information indépendante de la RDC et du monde",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0C4A1E",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

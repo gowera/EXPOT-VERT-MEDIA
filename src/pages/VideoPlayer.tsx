@@ -124,7 +124,7 @@ const VideoPlayer = () => {
     return (
       <div className="min-h-screen pt-8 pb-8 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kako-blue mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rtct-green mx-auto mb-4"></div>
           <p>Chargement de la vidéo...</p>
         </div>
       </div>
@@ -246,14 +246,14 @@ const VideoPlayer = () => {
               <CardContent className="p-4 md:p-6">
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
-                    <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-kako-yellow to-kako-red rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 md:w-12 md:h-12 gradient-rtct rounded-full flex items-center justify-center">
                       <span className="text-white font-bold text-sm md:text-lg">K</span>
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
                       <h3 className="font-semibold text-gray-900">Expo Vert Média</h3>
-                      <Button size="sm" className="gradient-kako text-white self-start">
+                      <Button size="sm" className="gradient-rtct text-white self-start">
                         S'abonner
                       </Button>
                     </div>
@@ -361,7 +361,7 @@ const VideoPlayer = () => {
             [1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
               <Card key={item} className="hover-lift cursor-pointer">
                 <div className="aspect-video bg-gray-200 rounded-t-lg overflow-hidden">
-                  <div className="w-full h-full bg-gradient-to-br from-kako-blue to-kako-yellow opacity-20"></div>
+                  <div className="w-full h-full bg-gradient-to-br from-rtct-green-dark to-rtct-green-light opacity-20"></div>
                 </div>
                 <CardContent className="p-3 md:p-4">
                   <h4 className="font-semibold text-sm line-clamp-2 mb-2">

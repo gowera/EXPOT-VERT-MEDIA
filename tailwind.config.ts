@@ -67,13 +67,6 @@ export default {
 					'green-light': '#2FA34A',
 					'green-dark': '#0C4A1E',
 					dark: '#1A1A1A'
-				},
-				// Keep kako aliases for backward compatibility
-				kako: {
-					yellow: '#1C7A34',
-					red: '#0C4A1E',
-					blue: '#1C7A34',
-					dark: '#1A1A1A'
 				}
 			},
 			fontFamily: {

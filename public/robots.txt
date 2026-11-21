@@ -2,13 +2,11 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://kakofm.net/sitemap.xml
+Sitemap: https://expovertmedia.net/sitemap.xml
 
 # Specific crawl directives for important content
 Allow: /articles
 Allow: /videos
-Allow: /podcasts
-Allow: /programmes
 Allow: /equipe
 Allow: /contact
 Allow: /soutenir

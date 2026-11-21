@@ -1,138 +1,52 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Mail, Phone, MapPin, MessageSquare, Send, Clock, Globe } from 'lucide-react';
+import { Mail, Phone, MapPin, MessageCircle, Send, Facebook, Youtube, Twitter } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { SITE } from '@/lib/identity';
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      toast({ title: "Message envoyé !", description: "Nous vous répondrons dans les plus brefs délais." });
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      setIsSubmitting(false);
-    }, 1000);
+    const subject = encodeURIComponent(formData.subject);
+    const body = encodeURIComponent(`${formData.message}\n\n${formData.name}\n${formData.email}`);
+    window.location.href = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
+    toast({ title: 'Votre messagerie va s’ouvrir', description: 'Vérifiez puis envoyez votre message depuis votre boîte mail.' });
+    setIsSubmitting(false);
   };
-
-  const contactInfo = [
-    { icon: Mail, title: "Email", details: ["contact@radiotayna.com"], color: "text-rtct-green" },
-    { icon: Phone, title: "Téléphone", details: ["À venir"], color: "text-rtct-green-dark" },
-    { icon: MapPin, title: "Adresse", details: ["Ville de Goma, Nord-Kivu, RDC"], color: "text-rtct-green-light" },
-    { icon: Clock, title: "Horaires", details: ["24h/24 - 7j/7", "Bureau : 8h-18h"], color: "text-gray-600" }
-  ];
-
-  const socialLinks = [
-    { name: "Facebook", url: "https://www.facebook.com/radiotayna", emoji: "📘", color: "bg-blue-600" },
-    { name: "Instagram", url: "https://www.instagram.com/radiotayna", emoji: "📷", color: "bg-pink-500" },
-    { name: "YouTube", url: "https://www.youtube.com/@radiotayna", emoji: "📺", color: "bg-red-600" }
-  ];
-
   return (
-    <div className="min-h-screen pt-16 pb-8">
+    <div className="min-h-screen pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Contactez-nous</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Une question, une suggestion ou envie de collaborer ? N'hésitez pas à nous contacter !
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 lg:sticky lg:top-20">
-            <Card className="hover-lift">
-              <CardHeader>
-                <CardTitle className="flex items-center text-2xl">
-                  <MessageSquare className="h-6 w-6 mr-3 text-rtct-green" />
-                  Envoyez-nous un message
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Nom complet *</label>
-                      <Input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required placeholder="Votre nom" className="w-full" />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
-                      <Input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required placeholder="votre@email.com" className="w-full" />
-                    </div>
-                  </div>
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">Sujet *</label>
-                    <Input type="text" id="subject" name="subject" value={formData.subject} onChange={handleInputChange} required placeholder="Sujet de votre message" className="w-full" />
-                  </div>
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Message *</label>
-                    <Textarea id="message" name="message" value={formData.message} onChange={handleInputChange} required placeholder="Votre message..." rows={6} className="w-full" />
-                  </div>
-                  <Button type="submit" size="lg" disabled={isSubmitting} className="w-full gradient-rtct text-white">
-                    {isSubmitting ? (<><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>Envoi en cours...</>) : (<><Send className="h-4 w-4 mr-2" />Envoyer le message</>)}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="space-y-6">
-            <Card className="hover-lift">
-              <CardHeader><CardTitle className="text-xl">Informations de contact</CardTitle></CardHeader>
-              <CardContent className="space-y-6">
-                {contactInfo.map((info, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <div className={`p-2 rounded-lg bg-gray-100 ${info.color}`}><info.icon className="h-5 w-5" /></div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900">{info.title}</h4>
-                      {info.details.map((detail, idx) => (<p key={idx} className="text-gray-600 text-sm">{detail}</p>))}
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            <Card className="hover-lift">
-              <CardHeader><CardTitle className="text-xl">Suivez-nous</CardTitle></CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-3">
-                  {socialLinks.map((social, index) => (
-                    <Button key={index} variant="outline" size="sm" className="flex items-center justify-center space-x-2 hover:scale-105 transition-transform" onClick={() => window.open(social.url, '_blank')}>
-                      <span>{social.emoji}</span><span className="text-xs">{social.name}</span>
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        <div className="mt-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Questions Fréquentes</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { question: "Comment écouter RTCT ?", answer: "Vous pouvez nous écouter sur 88.1 MHz à Goma ou en direct sur notre site web via le lecteur radio." },
-              { question: "Comment proposer un sujet d'émission ?", answer: "Contactez-nous via le formulaire ci-dessus ou par email à contact@radiotayna.com." },
-              { question: "Puis-je passer une annonce publicitaire ?", answer: "Oui ! Contactez notre équipe commerciale pour connaître nos tarifs et disponibilités." },
-              { question: "Comment devenir partenaire de RTCT ?", answer: "Nous sommes toujours ouverts aux partenariats. Envoyez-nous votre proposition de collaboration." }
-            ].map((faq, index) => (
-              <Card key={index} className="hover-lift">
-                <CardContent className="p-6">
-                  <h4 className="font-semibold text-lg mb-2 text-rtct-green">{faq.question}</h4>
-                  <p className="text-gray-600">{faq.answer}</p>
-                </CardContent>
-              </Card>
-            ))}
+        <div className="text-center mb-10"><h1 className="text-4xl font-bold mb-4">Contactez la rédaction</h1><p className="text-xl text-gray-600">Proposez un sujet, une enquête ou envoyez une information vérifiable.</p></div>
+        <div className="grid lg:grid-cols-[2fr_1fr] gap-8">
+          <Card><CardHeader><CardTitle className="flex items-center"><MessageCircle className="h-5 w-5 mr-2 text-rtct-green" />Envoyer un message</CardTitle></CardHeader><CardContent>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid md:grid-cols-2 gap-4">
+                <Input required aria-label="Nom" placeholder="Nom complet" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                <Input required type="email" aria-label="Email" placeholder="Email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+              </div>
+              <Input required aria-label="Sujet" placeholder="Sujet" value={formData.subject} onChange={(e) => setFormData({ ...formData, subject: e.target.value })} />
+              <Textarea required aria-label="Message" placeholder="Votre message..." rows={7} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} />
+              <Button type="submit" disabled={isSubmitting} className="gradient-rtct text-white w-full"><Send className="h-4 w-4 mr-2" />Envoyer</Button>
+            </form>
+          </CardContent></Card>
+          <div className="space-y-5">
+            <Card><CardContent className="p-6 space-y-5">
+              <div className="flex gap-3"><Mail className="h-5 w-5 text-rtct-green" /><div><h3 className="font-bold">Email</h3><a className="text-sm text-gray-600" href={`mailto:${SITE.email}`}>{SITE.email}</a></div></div>
+              <div className="flex gap-3"><Phone className="h-5 w-5 text-rtct-green" /><div><h3 className="font-bold">Téléphone</h3><p className="text-sm text-gray-600">{SITE.phone}</p></div></div>
+              <div className="flex gap-3"><MapPin className="h-5 w-5 text-rtct-green" /><div><h3 className="font-bold">Adresse</h3><p className="text-sm text-gray-600">{SITE.address}</p></div></div>
+            </CardContent></Card>
+            <Card><CardContent className="p-6"><h3 className="font-bold mb-4">Suivez-nous</h3><div className="grid grid-cols-2 gap-3">
+              <Button asChild variant="outline"><a href={SITE.facebook} target="_blank" rel="noopener noreferrer"><Facebook className="h-4 w-4 mr-2" />Facebook</a></Button>
+              <Button asChild variant="outline"><a href={SITE.youtube} target="_blank" rel="noopener noreferrer"><Youtube className="h-4 w-4 mr-2" />YouTube</a></Button>
+              <Button asChild variant="outline"><a href={SITE.twitter} target="_blank" rel="noopener noreferrer"><Twitter className="h-4 w-4 mr-2" />X / Twitter</a></Button>
+              <Button asChild variant="outline"><a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-4 w-4 mr-2" />WhatsApp</a></Button>
+            </div></CardContent></Card>
           </div>
         </div>
       </div>

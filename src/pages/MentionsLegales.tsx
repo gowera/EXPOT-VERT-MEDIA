@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { SITE } from '@/lib/identity';
 
 const MentionsLegales = () => {
   return (
@@ -15,13 +16,12 @@ const MentionsLegales = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">1. Informations sur l'éditeur</h2>
               <div className="text-muted-foreground space-y-2">
-                <p><strong>Nom de l'organisation :</strong> Radio Télévision Communautaire Tayna (RTCT/GOMA)</p>
-                <p><strong>Statut :</strong> Radio communautaire</p>
-                <p><strong>Fréquence :</strong> 88.1 MHz</p>
-                <p><strong>Adresse :</strong> Ville de Goma, Nord-Kivu, RDC</p>
+                <p><strong>Nom de l'organisation :</strong> Expo Vert Média</p>
+                <p><strong>Statut :</strong> Média numérique indépendant</p>
+                <p><strong>Adresse :</strong> {SITE.address}</p>
                 <p><strong>Pays :</strong> République Démocratique du Congo</p>
-                <p><strong>Email :</strong> contact@radiotayna.com</p>
-                <p><strong>Site web :</strong> www.radiotayna.com</p>
+                <p><strong>Email :</strong> {SITE.email}</p>
+                <p><strong>Site web :</strong> {SITE.url}</p>
               </div>
             </section>
 
@@ -29,7 +29,7 @@ const MentionsLegales = () => {
               <h2 className="text-2xl font-semibold mb-4">2. Directeur de la publication</h2>
               <div className="text-muted-foreground space-y-2">
                 <p><strong>Responsable éditorial :</strong> Direction de Expo Vert Média</p>
-                <p><strong>Email :</strong> contact@radiotayna.com</p>
+                <p><strong>Email :</strong> {SITE.email}</p>
               </div>
             </section>
 
@@ -51,7 +51,7 @@ const MentionsLegales = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">5. Conditions d'utilisation</h2>
               <p className="text-muted-foreground leading-relaxed">
-                L'utilisation du site www.radiotayna.com implique l'acceptation pleine et entière des conditions générales d'utilisation.
+                L'utilisation du site {SITE.url} implique l'acceptation pleine et entière des conditions générales d'utilisation.
               </p>
             </section>
 
@@ -72,8 +72,8 @@ const MentionsLegales = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">8. Contact</h2>
               <div className="text-muted-foreground space-y-2">
-                <p><strong>Par email :</strong> contact@radiotayna.com</p>
-                <p><strong>Par courrier :</strong> Expo Vert Média, Ville de Goma, Nord-Kivu, RDC</p>
+                <p><strong>Par email :</strong> {SITE.email}</p>
+                <p><strong>Par courrier :</strong> Expo Vert Média, {SITE.address}</p>
               </div>
             </section>
           </CardContent>

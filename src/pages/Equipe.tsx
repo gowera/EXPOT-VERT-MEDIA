@@ -7,7 +7,7 @@ import logoRtct from '@/assets/logo-evm.png';
 
 const Equipe = () => {
   const direction = [
-    { id: 1, name: "Direction RTCT", role: "Direction Générale", image: logoRtct },
+    { id: 1, name: "Direction éditoriale", role: "Direction générale", image: logoRtct },
   ];
 
   const animateurs = [
