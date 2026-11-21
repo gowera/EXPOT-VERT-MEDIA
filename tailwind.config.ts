@@ -70,7 +70,7 @@ export default {
 				}
 			},
 			fontFamily: {
-				poppins: ['Poppins', 'sans-serif'],
+				oswald: ['Oswald', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

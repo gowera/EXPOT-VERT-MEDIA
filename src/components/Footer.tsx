@@ -57,11 +57,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo et Description */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="rounded-md bg-white p-2">
-                <img src={logoRtct} alt="Expo Vert Média" className="h-10 w-auto" />
-              </div>
-              <span className="text-xl font-bold">Expo Vert Média</span>
+            <div className="w-full rounded-md bg-white p-3">
+              <img src={logoRtct} alt="Expo Vert Média" className="block h-auto w-full" />
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
               Média numérique indépendant dédié à l'information, aux enquêtes et à la démocratie en RDC et dans le monde.
@@ -110,17 +107,17 @@ const Footer = () => {
             <h3 className="text-lg font-semibold">Contact</h3>
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
-                <MapPin className="h-4 w-4 mt-1 text-gray-400 flex-shrink-0" />
+                <MapPin className="h-5 w-5 mt-1 text-gray-400 flex-shrink-0" />
                 <p className="text-gray-300 text-sm">
                   {SITE.address}
                 </p>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="h-4 w-4 text-gray-400" />
+                <Phone className="h-5 w-5 flex-shrink-0 text-gray-400" />
                 <a href="tel:+243970716002" className="text-gray-300 hover:text-white text-sm">{SITE.phone}</a>
               </div>
               <div className="flex items-center space-x-3">
-                <Mail className="h-4 w-4 text-gray-400" />
+                <Mail className="h-5 w-5 flex-shrink-0 text-gray-400" />
                 <a href={`mailto:${SITE.email}`} className="text-gray-300 hover:text-white transition-colors text-sm">
                   {SITE.email}
                 </a>
@@ -151,12 +148,12 @@ const Footer = () => {
               >
                 {isSubmitting ? (
                   <>
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                     Inscription...
                   </>
                 ) : (
                   <>
-                    <Send className="h-3 w-3 mr-2" />
+                    <Send className="h-5 w-5 mr-2" />
                     S'inscrire
                   </>
                 )}
