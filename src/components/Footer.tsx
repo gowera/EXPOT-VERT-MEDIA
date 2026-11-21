@@ -52,7 +52,7 @@ const Footer = () => {
     }
   };
 
-  return <footer className="bg-gray-900 text-white mb-20">
+  return <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo et Description */}
@@ -89,7 +89,6 @@ const Footer = () => {
               <Link to="/" className="block text-gray-300 hover:text-white transition-colors text-sm">Accueil</Link>
               <Link to="/articles" className="block text-gray-300 hover:text-white transition-colors text-sm">Articles</Link>
               <Link to="/videos" className="block text-gray-300 hover:text-white transition-colors text-sm">Vidéos</Link>
-              <Link to="/equipe" className="block text-gray-300 hover:text-white transition-colors text-sm">Équipe</Link>
             </nav>
           </div>
 

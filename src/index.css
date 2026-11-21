@@ -139,6 +139,21 @@
   animation-play-state: paused;
 }
 
+.lead-transition {
+  animation: lead-reveal 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes lead-reveal {
+  0% {
+    opacity: 0;
+    transform: translateX(18px) scale(0.992);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
 @keyframes news-scroll {
   from { transform: translateY(0); }
   to { transform: translateY(-50%); }

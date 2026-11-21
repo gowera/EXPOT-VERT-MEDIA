@@ -50,15 +50,8 @@ const Articles = () => {
   const clearCategory = () => { setSelectedCategory(null); setSelectedCategoryName(''); setPage(1); };
 
   return (
-    <div className="min-h-screen pt-20 pb-8">
+    <div className="min-h-screen pt-8 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Articles</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Découvrez nos derniers articles sur l'environnement, la conservation et la communauté
-          </p>
-        </div>
-
         <Card className="mb-8">
           <CardContent className="p-4 sm:p-6">
             <form onSubmit={handleSearch} className="space-y-4">

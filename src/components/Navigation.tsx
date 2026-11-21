@@ -8,7 +8,6 @@ const navItems = [
   { path: '/', label: 'Accueil' },
   { path: '/articles', label: 'Actualités' },
   { path: '/videos', label: 'Vidéos' },
-  { path: '/equipe', label: 'Équipe' },
   { path: '/a-propos', label: 'À propos' },
   { path: '/contact', label: 'Contact' },
   { path: '/soutenir', label: 'Soutenir' },
@@ -19,16 +18,8 @@ const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isActive = (path: string) => location.pathname === path;
-  const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
-      <div className="hidden md:block bg-rtct-green-dark text-white text-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-7 flex items-center justify-between">
-          <span className="capitalize">{today}</span>
-          <span className="tracking-widest uppercase">Un œil sur le monde</span>
-        </div>
-      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 gap-4">
           <Link to="/" className="flex items-center shrink-0">

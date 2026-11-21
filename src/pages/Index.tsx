@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Calendar, Clock, Play, MessageCircle } from 'lucide-react';
+import { ArrowRight, Play, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { fetchPosts, featuredImage, firstCategory, plain, Post, RUBRIQUES } from '@/lib/articles';
@@ -39,9 +39,11 @@ const ArticleCard = ({ article, large = false }: { article: Post; large?: boolea
     <div className={large ? 'absolute z-10 inset-x-0 bottom-0 p-6 md:p-9 text-white' : 'py-4'}>
       <span className={large ? 'inline-block text-xs font-bold uppercase tracking-wider bg-rtct-green px-3 py-1 mb-3' : 'text-xs font-bold uppercase tracking-wider text-rtct-green'}>{firstCategory(article) || 'Actualité'}</span>
       <Link to={`/article/${article.slug}`}>
-        <h3 className={large ? 'text-3xl md:text-5xl font-bold leading-tight mb-3 drop-shadow-lg' : 'text-lg font-bold leading-snug mt-2'}>{plain(article.title.rendered)}</h3>
+        <h3 className={large ? 'text-2xl md:text-4xl max-w-4xl font-bold leading-tight mb-3 drop-shadow-lg' : 'text-lg font-bold leading-snug mt-2'}>{plain(article.title.rendered)}</h3>
       </Link>
-      {large && <p className="text-sm md:text-base text-white/90 max-w-3xl line-clamp-2 mb-2">{plain(article.excerpt.rendered)}</p>}
+      {large && plain(article.title.rendered).length <= 70 && (
+        <p className="text-sm md:text-base text-white/90 max-w-3xl line-clamp-2 mb-2">{plain(article.excerpt.rendered)}</p>
+      )}
       <time className={large ? 'text-xs text-white/80' : 'text-xs text-gray-500 mt-2'} dateTime={article.date}>{relativeTime(article.date)}</time>
     </div>
   </article>
@@ -49,6 +51,7 @@ const ArticleCard = ({ article, large = false }: { article: Post; large?: boolea
 
 const Index = () => {
   const [leadIndex, setLeadIndex] = useState(0);
+  const touchStart = useRef<number | null>(null);
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ['articles', 'home'],
     queryFn: () => fetchPosts({ perPage: 24 }),
@@ -75,6 +78,8 @@ const Index = () => {
   const leadArticles = articles.slice(0, 3);
   const lead = leadArticles[leadIndex] || leadArticles[0];
   const rest = articles.slice(3);
+  const showPreviousLead = () => setLeadIndex((current) => (current - 1 + Math.min(3, articles.length)) % Math.min(3, articles.length));
+  const showNextLead = () => setLeadIndex((current) => (current + 1) % Math.min(3, articles.length));
   const categorySection = (name: string) => rest.filter((article) =>
     (firstCategory(article) || '').toLowerCase().includes(name.toLowerCase())
   ).slice(0, 3);
@@ -86,8 +91,28 @@ const Index = () => {
           <div className="h-[430px] bg-gray-100 animate-pulse" />
         ) : lead ? (
           <div className="grid lg:grid-cols-[minmax(0,2fr)_340px] gap-8">
-            <div>
-              <ArticleCard article={lead} large />
+            <div
+              onTouchStart={(event) => { touchStart.current = event.touches[0].clientX; }}
+              onTouchEnd={(event) => {
+                if (touchStart.current === null) return;
+                const distance = event.changedTouches[0].clientX - touchStart.current;
+                if (Math.abs(distance) > 45) distance > 0 ? showPreviousLead() : showNextLead();
+                touchStart.current = null;
+              }}
+            >
+              <div key={lead.id} className="lead-transition relative">
+                <ArticleCard article={lead} large />
+                {leadArticles.length > 1 && (
+                  <>
+                    <button type="button" aria-label="Article précédent" onClick={showPreviousLead} className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/35 p-2 text-white backdrop-blur hover:bg-black/60">
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button type="button" aria-label="Article suivant" onClick={showNextLead} className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/35 p-2 text-white backdrop-blur hover:bg-black/60">
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                  </>
+                )}
+              </div>
               {leadArticles.length > 1 && (
                 <div className="flex justify-center gap-2 mt-3">
                   {leadArticles.map((article, index) => (
@@ -136,13 +161,22 @@ const Index = () => {
         'Politique et gouvernance',
         'Société et droits humains',
         'Économie et entrepreneuriat',
-      ].map((rubrique) => {
+      ].map((rubrique, index) => {
         const items = categorySection(rubrique).length ? categorySection(rubrique) : rest.filter((_, i) => i % 3 === RUBRIQUES.indexOf(rubrique) % 3).slice(0, 3);
+        const sectionStyles = [
+          'bg-emerald-50/75',
+          'bg-sky-50/70',
+          'bg-amber-50/65',
+          'bg-violet-50/60',
+        ];
         return (
-          <section key={rubrique} className="border-t py-10">
+          <section key={rubrique} className={`border-t border-gray-100 py-10 ${sectionStyles[index]}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl md:text-3xl font-bold">{rubrique}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold relative pb-3">
+                  {rubrique}
+                  <span className="absolute bottom-0 left-0 h-1 w-16 rounded-full bg-rtct-green-light" />
+                </h2>
                 <Link to={`/articles?rubrique=${encodeURIComponent(rubrique)}`} className="text-sm font-semibold text-rtct-green flex items-center gap-1">
                   Voir tout <ArrowRight className="h-4 w-4" />
                 </Link>
