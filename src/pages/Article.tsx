@@ -253,7 +253,7 @@ const Article = () => {
             </Card>
           </div>
 
-          <div className="lg:col-span-1 space-y-6">
+          <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
             {relatedArticles && (
               <Card>
                 <CardContent className="p-6">
@@ -314,7 +314,7 @@ const Article = () => {
                 <a href="#comment-section" className="mt-4 inline-block text-sm font-semibold text-rtct-green hover:underline">Participer à la discussion</a>
               </CardContent>
             </Card>
-          </div>
+          </aside>
         </div>
 
         <footer className="mt-12 pt-8 border-t border-gray-200">
