@@ -37,7 +37,7 @@ const MentionsLegales = () => {
               <h2 className="text-2xl font-semibold mb-4">3. Hébergement et développement du site</h2>
               <div className="text-muted-foreground space-y-2">
                 <p><strong>Développement :</strong> Site créé avec Lovable (https://lovable.dev)</p>
-                <p><strong>APIs utilisées :</strong> WordPress (articles), YouTube (vidéos)</p>
+                <p><strong>Source éditoriale :</strong> Expo Vert Média</p>
               </div>
             </section>
 

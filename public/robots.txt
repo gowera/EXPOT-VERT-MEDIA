@@ -6,7 +6,6 @@ Sitemap: https://expovertmedia.net/sitemap.xml
 
 # Specific crawl directives for important content
 Allow: /articles
-Allow: /videos
 Allow: /equipe
 Allow: /contact
 Allow: /soutenir

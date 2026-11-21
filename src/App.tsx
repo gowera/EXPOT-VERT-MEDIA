@@ -9,8 +9,6 @@ import NewsletterTrigger from "./components/NewsletterTrigger";
 import Index from "./pages/Index";
 import Articles from "./pages/Articles";
 import Article from "./pages/Article";
-import Videos from "./pages/Videos";
-import VideoPlayer from "./pages/VideoPlayer";
 import Contact from "./pages/Contact";
 import Soutenir from "./pages/Soutenir";
 import APropos from "./pages/APropos";
@@ -40,8 +38,6 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/articles" element={<Articles />} />
             <Route path="/article/:slug" element={<Article />} />
-            <Route path="/videos" element={<Videos />} />
-            <Route path="/video/:videoId" element={<VideoPlayer />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/soutenir" element={<Soutenir />} />
             <Route path="/a-propos" element={<APropos />} />

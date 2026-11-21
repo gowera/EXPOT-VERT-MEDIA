@@ -8,7 +8,6 @@ export const generateSitemapXML = () => {
   const pages = [
     { url: '/', priority: '1.0', changefreq: 'daily' },
     { url: '/articles', priority: '0.9', changefreq: 'daily' },
-    { url: '/videos', priority: '0.8', changefreq: 'weekly' },
     { url: '/contact', priority: '0.6', changefreq: 'monthly' },
     { url: '/soutenir', priority: '0.7', changefreq: 'monthly' },
     { url: '/a-propos', priority: '0.6', changefreq: 'monthly' },

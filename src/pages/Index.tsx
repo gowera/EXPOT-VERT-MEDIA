@@ -1,21 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Play, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { fetchPosts, featuredImage, firstCategory, plain, Post, RUBRIQUES } from '@/lib/articles';
 import { SITE } from '@/lib/identity';
-
-interface YouTubeVideo {
-  id: { videoId: string };
-  snippet: {
-    title: string;
-    description: string;
-    publishedAt: string;
-    thumbnails: { medium: { url: string } };
-  };
-}
 
 const relativeTime = (date: string) => {
   const diff = Date.now() - new Date(date).getTime();
@@ -58,16 +48,6 @@ const Index = () => {
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ['articles', 'home'],
     queryFn: () => fetchPosts({ perPage: 24 }),
-  });
-
-  const { data: videos = [] } = useQuery({
-    queryKey: ['youtube-videos-home'],
-    queryFn: async () => {
-      const response = await fetch(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyAm1eWQTfpnRIPKIPw4HTZDOgWuciITktI&channelId=UCFG9Mr12mxqs82snzRXbjeg&part=snippet,id&order=date&type=video&maxResults=3`);
-      if (!response.ok) throw new Error('Erreur lors du chargement des vidéos');
-      const data = await response.json();
-      return (data.items || []) as YouTubeVideo[];
-    },
   });
 
   useEffect(() => {
@@ -201,28 +181,6 @@ const Index = () => {
           </section>
         );
       })}
-
-      <section className="bg-gray-950 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold">Reportages vidéo</h2>
-            <Link to="/videos" className="text-sm font-semibold flex items-center gap-1">Toutes les vidéos <ArrowRight className="h-4 w-4" /></Link>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {videos.map((video) => (
-              <Link key={video.id.videoId} to={`/video/${video.id.videoId}`} className="group">
-                <div className="relative aspect-video overflow-hidden">
-                  <img src={video.snippet.thumbnails.medium.url} alt={video.snippet.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                    <span className="rounded-full bg-white/90 p-3"><Play className="h-5 w-5 text-gray-950 fill-current" /></span>
-                  </div>
-                </div>
-                <h3 className="font-semibold mt-3 line-clamp-2">{video.snippet.title}</h3>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <section className="py-10 bg-rtct-green-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-5">

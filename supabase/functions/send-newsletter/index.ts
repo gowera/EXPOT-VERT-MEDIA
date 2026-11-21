@@ -135,7 +135,7 @@ const handler = async (req: Request): Promise<Response> => {
                   </div>
                   <h1 class="title">${title}</h1>
                   ${description ? `<p class="description">${description}</p>` : ''}
-                  <a href="${videoUrl || `https://expovertmedia.net/videos`}" class="cta-button">🎥 Regarder la vidéo</a>
+                  <a href="${videoUrl || `https://www.youtube.com/watch?v=${contentId}`}" class="cta-button">🎥 Regarder la vidéo</a>
                 </div>
                 <div class="footer">
                   <p>© 2026 Expo Vert Média - Information indépendante<br>

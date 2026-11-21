@@ -8,7 +8,6 @@ import { fetchPosts, plain } from '@/lib/articles';
 const navItems = [
   { path: '/', label: 'Accueil' },
   { path: '/articles', label: 'Actualités' },
-  { path: '/videos', label: 'Vidéos' },
   { path: '/a-propos', label: 'À propos' },
   { path: '/contact', label: 'Contact' },
   { path: '/soutenir', label: 'Soutenir' },
