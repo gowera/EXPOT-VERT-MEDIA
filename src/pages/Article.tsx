@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Calendar, Clock, User, Share2, Facebook, Twitter, MessageCircle, Copy, ArrowLeft, Send } from 'lucide-react';
-import { fetchPosts, fetchPostBySlug, featuredImage, firstCategory, plain, Post } from '@/lib/articles';
+import { Calendar, Clock, User, Share2, Facebook, Twitter, MessageCircle, Copy, ArrowLeft, Send, ExternalLink } from 'lucide-react';
+import { fetchPosts, fetchPostBySlug, featuredImage, firstCategory, plain, Post, ARTICLE_SOURCE_URL } from '@/lib/articles';
 import { SITE } from '@/lib/identity';
 
 const relativeTime = (date: string) => {
@@ -179,6 +179,20 @@ const Article = () => {
                 <span>Par {article._embedded.author[0].name}</span>
               </div>
             )}
+            <div className="flex items-center space-x-2">
+              <ExternalLink className="h-4 w-4" />
+              <span>
+                Source :{' '}
+                <a
+                  href={ARTICLE_SOURCE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-rtct-green hover:underline"
+                >
+                  media.expovert.net
+                </a>
+              </span>
+            </div>
           </div>
 
           {article._embedded?.['wp:featuredmedia']?.[0] && (
