@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Calendar, Clock, User, Share2, Facebook, Twitter, MessageCircle, Copy, ArrowLeft, Send, ExternalLink } from 'lucide-react';
-import { fetchPosts, fetchPostBySlug, featuredImage, firstCategory, plain, Post, ARTICLE_SOURCE_URL } from '@/lib/articles';
+import { fetchPosts, fetchPostBySlug, featuredImage, firstCategory, plain, Post, BLOGGER_URL, ARTICLE_SOURCE_URL } from '@/lib/articles';
 import { SITE } from '@/lib/identity';
 
 const relativeTime = (date: string) => {
@@ -49,7 +49,7 @@ const Article = () => {
     queryFn: () => fetchPosts({ perPage: 100 }),
     enabled: !!article,
   });
-  const shareUrl = `https://expovertmedia.net/article/${slug}`;
+  const shareUrl = `https://media.expovert.net/article/${slug}`;
   const shareTitle = article?.title.rendered || 'Article Expo Vert Média';
 
   useEffect(() => {
@@ -183,6 +183,15 @@ const Article = () => {
               <ExternalLink className="h-4 w-4" />
               <span>
                 Source :{' '}
+                <a
+                  href={BLOGGER_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-rtct-green hover:underline"
+                >
+                  Expo Vert Média Blogger
+                </a>
+                {' · '}
                 <a
                   href={ARTICLE_SOURCE_URL}
                   target="_blank"

@@ -5,7 +5,7 @@ export const BLOGGER_URL = 'https://expovertmedia.blogspot.com';
 export const ARTICLE_SOURCE_URL = 'https://media.expovert.net';
 export const WORDPRESS_PRIMARY = ARTICLE_SOURCE_URL;
 export const WORDPRESS_FALLBACK = 'https://totalementactus.net';
-export const ARTICLE_SOURCE = 'wordpress' as 'blogger' | 'wordpress';
+export const ARTICLE_SOURCE = 'blogger' as 'blogger' | 'wordpress';
 
 export interface Term { id: number; name: string; slug: string }
 export interface Post {

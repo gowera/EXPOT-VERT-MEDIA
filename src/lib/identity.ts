@@ -1,7 +1,7 @@
 export const SITE = {
   name: 'Expo Vert Média',
   tagline: 'Un œil sur le monde',
-  url: 'https://expovertmedia.net',
+  url: 'https://media.expovert.net',
   email: 'contact@expovertmedia.net',
   phone: '+243 970 716 002',
   address: 'Kinshasa, République démocratique du Congo',

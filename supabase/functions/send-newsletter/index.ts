@@ -90,12 +90,12 @@ const handler = async (req: Request): Promise<Response> => {
                   ${imageUrl ? `<img src="${imageUrl}" alt="${title}" class="article-image" />` : ''}
                   <h1 class="title">${title}</h1>
                   ${brief ? `<p class="brief">${brief}</p>` : ''}
-                  <a href="https://expovertmedia.net/article/${contentId}" class="cta-button">📖 Lire l'article</a>
+                  <a href="https://media.expovert.net/article/${contentId}" class="cta-button">📖 Lire l'article</a>
                 </div>
                 <div class="footer">
                   <p>© 2026 Expo Vert Média - Information indépendante<br>
                   Kinshasa, RDC</p>
-                  <p><a href="https://expovertmedia.net">Visitez notre site</a> | <a href="#">Se désabonner</a></p>
+                  <p><a href="https://media.expovert.net">Visitez notre site</a> | <a href="#">Se désabonner</a></p>
                 </div>
               </div>
             </body>
@@ -140,7 +140,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <div class="footer">
                   <p>© 2026 Expo Vert Média - Information indépendante<br>
                   Kinshasa, RDC</p>
-                  <p><a href="https://expovertmedia.net">Visitez notre site</a> | <a href="#">Se désabonner</a></p>
+                  <p><a href="https://media.expovert.net">Visitez notre site</a> | <a href="#">Se désabonner</a></p>
                 </div>
               </div>
             </body>
@@ -177,12 +177,12 @@ const handler = async (req: Request): Promise<Response> => {
                 <div class="content">
                   <h1 class="program-name">${programName || title}</h1>
                   <p class="program-description">"${programName || title}" : découvrez nos dernières productions éditoriales et nos reportages exclusifs.</p>
-                  <a href="https://expovertmedia.net/articles" class="cta-button">Lire les dernières informations</a>
+                  <a href="https://media.expovert.net/articles" class="cta-button">Lire les dernières informations</a>
                 </div>
                 <div class="footer">
                   <p>© 2026 Expo Vert Média - Information indépendante<br>
                   Kinshasa, RDC</p>
-                  <p><a href="https://expovertmedia.net">Visitez notre site</a> | <a href="#">Se désabonner</a></p>
+                  <p><a href="https://media.expovert.net">Visitez notre site</a> | <a href="#">Se désabonner</a></p>
                 </div>
               </div>
             </body>

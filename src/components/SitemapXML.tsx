@@ -2,7 +2,7 @@
 import React from 'react';
 
 export const generateSitemapXML = () => {
-  const baseURL = 'https://expovertmedia.net';
+  const baseURL = 'https://media.expovert.net';
   const currentDate = new Date().toISOString().split('T')[0];
   
   const pages = [
