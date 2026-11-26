@@ -55,6 +55,9 @@ const Article = () => {
   useEffect(() => {
     if (!article) return;
     document.title = `${plain(article.title.rendered)} | Expo Vert Média`;
+    const shareUrlForArticle = `https://media.expovert.net/article/${slug}`;
+    const image = featuredImage(article);
+    const description = plain(article.excerpt.rendered).trim();
     const setMeta = (selector: string, attr: string, content: string) => {
       let meta = document.querySelector(selector);
       if (!meta) {
@@ -64,11 +67,21 @@ const Article = () => {
       }
       meta.setAttribute('content', content);
     };
-    const image = featuredImage(article);
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', shareUrlForArticle);
     setMeta('meta[property="og:title"]', 'property', plain(article.title.rendered));
-    setMeta('meta[property="og:description"]', 'property', plain(article.excerpt.rendered));
+    setMeta('meta[property="og:description"]', 'property', description);
     setMeta('meta[property="og:type"]', 'property', 'article');
-    if (image) setMeta('meta[property="og:image"]', 'property', image);
+    setMeta('meta[property="og:url"]', 'property', shareUrlForArticle);
+    setMeta('meta[property="og:image"]', 'property', image || 'https://media.expovert.net/favicon.png');
+    setMeta('meta[name="twitter:title"]', 'name', plain(article.title.rendered));
+    setMeta('meta[name="twitter:description"]', 'name', description);
+    setMeta('meta[name="twitter:image"]', 'name', image || 'https://media.expovert.net/favicon.png');
 
     const schema = document.createElement('script');
     schema.type = 'application/ld+json';
