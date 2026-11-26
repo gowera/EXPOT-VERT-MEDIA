@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
@@ -31,6 +31,51 @@ const topicKeys = (post: Post) => {
       `name:${term.name.toLowerCase()}`,
     ]),
   ]);
+};
+
+const withoutRepeatedLead = (content: string, title: string, imageUrl?: string) => {
+  const parsed = new DOMParser().parseFromString(content, 'text/html');
+  const normalizedTitle = plain(title).replace(/\s+/g, ' ').trim().toLowerCase();
+  const normalizeImageUrl = (value: string) => {
+    const url = new URL(value, window.location.origin);
+    url.search = '';
+    url.pathname = decodeURIComponent(url.pathname)
+      .replace(/\/s\d+(?:-c)?\//, '/s0/')
+      .replace(/=s\d+(?:-c)?$/, '=s0')
+      .replace(/-\d+x\d+(?=\.[a-z0-9]+$)/i, '');
+    return `${url.origin}${url.pathname}`;
+  };
+  const featuredImageUrl = imageUrl ? normalizeImageUrl(imageUrl) : null;
+
+  while (parsed.body.firstChild) {
+    const first = parsed.body.firstChild;
+    if (first.nodeType === Node.TEXT_NODE && !first.textContent?.trim()) {
+      first.remove();
+      continue;
+    }
+
+    if (!(first instanceof HTMLElement)) break;
+    if (/^H[1-6]$/.test(first.tagName) &&
+      first.textContent?.replace(/\s+/g, ' ').trim().toLowerCase() === normalizedTitle) {
+      first.remove();
+      continue;
+    }
+
+    const images = first.matches('img') ? [first as HTMLImageElement] : [...first.querySelectorAll('img')];
+    if (featuredImageUrl && images.length === 1 && !first.textContent?.trim()) {
+      try {
+        if (normalizeImageUrl(images[0].src) === featuredImageUrl) {
+          first.remove();
+          continue;
+        }
+      } catch {
+        break;
+      }
+    }
+    break;
+  }
+
+  return parsed.body.innerHTML;
 };
 
 const Article = () => {
@@ -106,6 +151,10 @@ const Article = () => {
     item.slug !== article?.slug &&
     [...topicKeys(item)].some((topic) => articleTopics.has(topic))
   ).slice(0, 5);
+  const articleBody = useMemo(
+    () => article ? withoutRepeatedLead(article.content.rendered, article.title.rendered, featuredImage(article)) : '',
+    [article],
+  );
 
   const handleShare = (platform: string) => {
     let url = '';
@@ -259,7 +308,7 @@ const Article = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <article className="prose prose-lg max-w-none">
-              <div className="text-gray-800 leading-relaxed article-content" style={{ fontSize }} dangerouslySetInnerHTML={{ __html: article.content.rendered }} />
+              <div className="text-gray-800 leading-relaxed article-content" style={{ fontSize }} dangerouslySetInnerHTML={{ __html: articleBody }} />
             </article>
 
             <Card id="comment-section" className="mt-12">
