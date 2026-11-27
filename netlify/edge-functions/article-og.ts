@@ -41,9 +41,40 @@ function absoluteImage(url: string | undefined) {
   return new URL(url, 'https://media.expovert.net').toString();
 }
 
+function bloggerImageUrl(url: string | undefined) {
+  if (!url) return undefined;
+  try {
+    const image = new URL(url.startsWith('//') ? `https:${url}` : url);
+    image.pathname = image.pathname
+      .replace(/\/s\d+(?:-c)?\//i, '/s1200/')
+      .replace(/\/w\d+(?:-h\d+)?(?:-[a-z0-9]+)*\//i, '/s1200/')
+      .replace(/=s\d+(?:-c)?$/i, '=s1200')
+      .replace(/=w\d+(?:-h\d+)?(?:-[a-z0-9-]+)*$/i, '=s1200');
+    return image.href;
+  } catch {
+    return undefined;
+  }
+}
+
+function bloggerContentImage(content: string) {
+  const imageTags = content.matchAll(/<img\b([^>]*)>/gi);
+  for (const [, attributes] of imageTags) {
+    const candidates = [
+      ...attributes.matchAll(/\b(?:src|data-src|data-lazy-src|data-original)=["']([^"']+)["']/gi),
+    ].map(([, value]) => value);
+    const srcSet = attributes.match(/\bsrcset=["']([^"']+)["']/i)?.[1];
+    if (srcSet) {
+      candidates.push(...srcSet.split(',').map((item) => item.trim().split(/\s+/)[0]));
+    }
+    const image = candidates.map(bloggerImageUrl).find(Boolean);
+    if (image) return image;
+  }
+  return undefined;
+}
+
 async function fetchBloggerArticle(slug: string) {
   const response = await fetch(
-    'https://expovertmedia.blogspot.com/feeds/posts/default?alt=json&max-results=150',
+    'https://expovertmedia.blogspot.com/feeds/posts/default?alt=json&max-results=500',
   );
   if (!response.ok) return null;
 
@@ -57,8 +88,9 @@ async function fetchBloggerArticle(slug: string) {
   if (!entry) return null;
 
   const content = entry.content?.$t || entry.summary?.$t || '';
-  const imageMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
-  const image = entry['media$thumbnail']?.url || imageMatch?.[1];
+  const image =
+    bloggerImageUrl(entry['media$thumbnail']?.url) ||
+    bloggerContentImage(content);
   const text = decodeHtml(content);
 
   return {
@@ -107,14 +139,18 @@ export default async function handler(request: Request, context: any) {
   const slug = decodeURIComponent(url.pathname.replace(/^\/article\//, '').replace(/\/$/, ''));
   if (!slug) return context.next();
 
-  const article =
-    (await fetchBloggerArticle(slug)) ||
-    (await fetchWordPressArticle(slug));
+  let article = null;
+  try {
+    article = await fetchBloggerArticle(slug);
+  } catch (error) {
+    console.error('Unable to load Blogger article metadata', error);
+  }
+  if (!article) article = await fetchWordPressArticle(slug);
 
   const title = article?.title || 'Article - Expo Vert Média';
   const description = article?.description || 'Découvrez les articles de Expo Vert Média.';
   const image = article?.image || 'https://media.expovert.net/favicon.png';
-  const canonical = `https://media.expovert.net/article/${encodeURIComponent(slug)}`;
+  const canonical = `https://media.expovert.net/article/${encodeURIComponent(slug)}/`;
 
   const html = `<!doctype html>
 <html lang="fr">
@@ -130,12 +166,13 @@ export default async function handler(request: Request, context: any) {
     <meta property="og:title" content="${escapeHtml(title)}" />
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:image" content="${escapeHtml(image)}" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:secure_url" content="${escapeHtml(image)}" />
+    <meta property="og:image:alt" content="${escapeHtml(title)}" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(title)}" />
     <meta name="twitter:description" content="${escapeHtml(description)}" />
     <meta name="twitter:image" content="${escapeHtml(image)}" />
+    <meta name="twitter:image:alt" content="${escapeHtml(title)}" />
   </head>
   <body>
     <h1>${escapeHtml(title)}</h1>
@@ -148,6 +185,7 @@ export default async function handler(request: Request, context: any) {
     headers: {
       'content-type': 'text/html; charset=utf-8',
       'cache-control': 'public, max-age=300',
+      vary: 'user-agent',
     },
   });
 }

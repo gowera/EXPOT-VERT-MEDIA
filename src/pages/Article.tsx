@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Calendar, Clock, User, Share2, Facebook, Twitter, MessageCircle, Copy, ArrowLeft, Send, ExternalLink } from 'lucide-react';
+import { Calendar, Clock, User, Share2, Copy, ArrowLeft, Send, ExternalLink } from 'lucide-react';
 import { fetchPosts, fetchPostBySlug, featuredImage, firstCategory, plain, Post, BLOGGER_URL, ARTICLE_SOURCE_URL } from '@/lib/articles';
 import { SITE } from '@/lib/identity';
 
@@ -20,6 +20,28 @@ const relativeTime = (date: string) => {
   return `Il y a ${days} jour${days > 1 ? 's' : ''}`;
 };
 import { Link } from 'react-router-dom';
+
+const FacebookBrandIcon = ({ className }: { className?: string }) => (
+  <svg aria-hidden="true" className={className} viewBox="0 0 24 24" fill="#1877F2">
+    <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.026 1.792-4.698 4.533-4.698 1.312 0 2.686.236 2.686.236v2.953h-1.513c-1.49 0-1.953.93-1.953 1.884v2.263h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z" />
+  </svg>
+);
+
+const XBrandIcon = ({ className }: { className?: string }) => (
+  <svg aria-hidden="true" className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.901 1.153h3.68l-8.04 9.19 9.46 12.504h-7.406l-5.8-7.584-6.64 7.584H.473l8.6-9.83L0 1.153h7.594l5.243 6.932 6.064-6.932Zm-1.291 19.494h2.039L6.486 3.238h-2.19L17.61 20.647Z" />
+  </svg>
+);
+
+const WhatsAppBrandIcon = ({ className }: { className?: string }) => (
+  <svg aria-hidden="true" className={className} viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="12" fill="#25D366" />
+    <path
+      fill="#fff"
+      d="M19.05 4.93A9.93 9.93 0 0 0 12 2a9.98 9.98 0 0 0-8.57 15.1L2 22l5.08-1.33A9.98 9.98 0 0 0 22 12a9.93 9.93 0 0 0-2.95-7.07ZM12 20.2a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.02.79.81-2.94-.2-.31A8.2 8.2 0 1 1 12 20.2Zm4.5-6.15c-.25-.12-1.48-.73-1.71-.81-.23-.08-.4-.12-.56.13-.17.25-.65.81-.8.98-.15.17-.29.19-.54.06-.25-.12-1.06-.39-2.02-1.24-.75-.67-1.25-1.49-1.4-1.74-.15-.25-.02-.38.11-.5.11-.12.25-.29.37-.44.12-.15.17-.25.25-.41.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.09s.9 2.43 1.03 2.59c.12.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.48-.61 1.69-1.2.21-.59.21-1.09.15-1.2-.06-.1-.23-.17-.48-.29Z"
+    />
+  </svg>
+);
 
 const topicKeys = (post: Post) => {
   const terms = post._embedded?.['wp:term']?.flat() || [];
@@ -94,13 +116,12 @@ const Article = () => {
     queryFn: () => fetchPosts({ perPage: 100 }),
     enabled: !!article,
   });
-  const shareUrl = `https://media.expovert.net/article/${slug}`;
+  const shareUrl = `https://media.expovert.net/article/${slug}/`;
   const shareTitle = article?.title.rendered || 'Article Expo Vert Média';
 
   useEffect(() => {
     if (!article) return;
     document.title = `${plain(article.title.rendered)} | Expo Vert Média`;
-    const shareUrlForArticle = `https://media.expovert.net/article/${slug}`;
     const image = featuredImage(article);
     const description = plain(article.excerpt.rendered).trim();
     const setMeta = (selector: string, attr: string, content: string) => {
@@ -118,11 +139,11 @@ const Article = () => {
       canonical.setAttribute('rel', 'canonical');
       document.head.appendChild(canonical);
     }
-    canonical.setAttribute('href', shareUrlForArticle);
+    canonical.setAttribute('href', shareUrl);
     setMeta('meta[property="og:title"]', 'property', plain(article.title.rendered));
     setMeta('meta[property="og:description"]', 'property', description);
     setMeta('meta[property="og:type"]', 'property', 'article');
-    setMeta('meta[property="og:url"]', 'property', shareUrlForArticle);
+    setMeta('meta[property="og:url"]', 'property', shareUrl);
     setMeta('meta[property="og:image"]', 'property', image || 'https://media.expovert.net/favicon.png');
     setMeta('meta[name="twitter:title"]', 'name', plain(article.title.rendered));
     setMeta('meta[name="twitter:description"]', 'name', description);
@@ -287,14 +308,14 @@ const Article = () => {
                   <span className="font-medium text-gray-900">Partager cet article :</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Button size="sm" variant="outline" onClick={() => handleShare('facebook')} className="flex items-center space-x-1">
-                    <Facebook className="h-4 w-4" /><span className="hidden sm:inline">Facebook</span>
+                  <Button size="sm" variant="outline" aria-label="Partager sur Facebook" onClick={() => handleShare('facebook')} className="flex items-center space-x-1">
+                    <FacebookBrandIcon className="h-4 w-4" /><span className="hidden sm:inline">Facebook</span>
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleShare('twitter')} className="flex items-center space-x-1">
-                    <Twitter className="h-4 w-4" /><span className="hidden sm:inline">Twitter</span>
+                  <Button size="sm" variant="outline" aria-label="Partager sur X" onClick={() => handleShare('twitter')} className="flex items-center space-x-1">
+                    <XBrandIcon className="h-4 w-4" /><span className="hidden sm:inline">X</span>
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleShare('whatsapp')} className="flex items-center space-x-1">
-                    <MessageCircle className="h-4 w-4" /><span className="hidden sm:inline">WhatsApp</span>
+                  <Button size="sm" variant="outline" aria-label="Partager sur WhatsApp" onClick={() => handleShare('whatsapp')} className="flex items-center space-x-1">
+                    <WhatsAppBrandIcon className="h-4 w-4" /><span className="hidden sm:inline">WhatsApp</span>
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => handleShare('copy')} className="flex items-center space-x-1">
                     <Copy className="h-4 w-4" /><span className="hidden sm:inline">Copier</span>
@@ -338,7 +359,7 @@ const Article = () => {
             </Card>
           </div>
 
-          <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
+          <aside className="lg:col-span-1 space-y-6">
             {relatedArticles && (
               <Card>
                 <CardContent className="p-6">
@@ -409,9 +430,9 @@ const Article = () => {
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-600">Partager :</span>
-              <Button size="sm" variant="ghost" onClick={() => handleShare('facebook')}><Facebook className="h-4 w-4" /></Button>
-              <Button size="sm" variant="ghost" onClick={() => handleShare('twitter')}><Twitter className="h-4 w-4" /></Button>
-              <Button size="sm" variant="ghost" onClick={() => handleShare('whatsapp')}><MessageCircle className="h-4 w-4" /></Button>
+              <Button size="sm" variant="ghost" aria-label="Partager sur Facebook" onClick={() => handleShare('facebook')}><FacebookBrandIcon className="h-4 w-4" /></Button>
+              <Button size="sm" variant="ghost" aria-label="Partager sur X" onClick={() => handleShare('twitter')}><XBrandIcon className="h-4 w-4" /></Button>
+              <Button size="sm" variant="ghost" aria-label="Partager sur WhatsApp" onClick={() => handleShare('whatsapp')}><WhatsAppBrandIcon className="h-4 w-4" /></Button>
             </div>
           </div>
         </footer>
@@ -433,9 +454,9 @@ const Article = () => {
           </CardContent>
         </Card>
         <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t bg-white/95 backdrop-blur px-4 py-2 flex items-center justify-around">
-          <button aria-label="Partager sur WhatsApp" onClick={() => handleShare('whatsapp')}><MessageCircle className="h-5 w-5" /></button>
-          <button aria-label="Partager sur Facebook" onClick={() => handleShare('facebook')}><Facebook className="h-5 w-5" /></button>
-          <button aria-label="Partager sur X" onClick={() => handleShare('twitter')}><Twitter className="h-5 w-5" /></button>
+          <button aria-label="Partager sur WhatsApp" onClick={() => handleShare('whatsapp')}><WhatsAppBrandIcon className="h-5 w-5" /></button>
+          <button aria-label="Partager sur Facebook" onClick={() => handleShare('facebook')}><FacebookBrandIcon className="h-5 w-5" /></button>
+          <button aria-label="Partager sur X" onClick={() => handleShare('twitter')}><XBrandIcon className="h-5 w-5" /></button>
           <button aria-label="Copier le lien" onClick={() => handleShare('copy')}><Copy className="h-5 w-5" /></button>
         </div>
       </div>
