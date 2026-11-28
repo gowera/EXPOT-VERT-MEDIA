@@ -267,21 +267,21 @@ const Article = () => {
               <span>
                 Source :{' '}
                 <a
-                  href={BLOGGER_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-rtct-green hover:underline"
-                >
-                  Expo Vert Média Blogger
-                </a>
-                {' · '}
-                <a
                   href={ARTICLE_SOURCE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-medium text-rtct-green hover:underline"
                 >
                   media.expovert.net
+                </a>
+                {' · '}
+                <a
+                  href={BLOGGER_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-rtct-green hover:underline"
+                >
+                  Archives Blogger
                 </a>
               </span>
             </div>

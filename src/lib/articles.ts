@@ -1,11 +1,11 @@
-// Unified article source: Blogger (primary) -> WordPress fallback.
+// Unified article source: WordPress (primary) -> Blogger fallback.
 // Normalises everything to the WordPress post shape used across the site.
 
 export const BLOGGER_URL = 'https://expovertmedia.blogspot.com';
 export const ARTICLE_SOURCE_URL = 'https://media.expovert.net';
 export const WORDPRESS_PRIMARY = ARTICLE_SOURCE_URL;
 export const WORDPRESS_FALLBACK = 'https://totalementactus.net';
-export const ARTICLE_SOURCE = 'blogger' as 'blogger' | 'wordpress';
+export const ARTICLE_SOURCE: 'blogger' | 'wordpress' = 'wordpress';
 
 export interface Term { id: number; name: string; slug: string }
 export interface Post {
