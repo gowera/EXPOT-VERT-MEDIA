@@ -5,24 +5,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Calendar, ExternalLink, Loader2, Tag, X } from 'lucide-react';
+import { Search, Calendar, Loader2, Tag, X } from 'lucide-react';
 import { fetchPosts, RUBRIQUES } from '@/lib/articles';
 import { Link, useSearchParams } from 'react-router-dom';
 import CategoriesDialog from '@/components/CategoriesDialog';
-
-interface WordPressPost {
-  id: number;
-  title: { rendered: string };
-  excerpt: { rendered: string };
-  date: string;
-  link: string;
-  slug: string;
-  categories: number[];
-  _embedded?: {
-    'wp:featuredmedia'?: Array<{ source_url: string; alt_text: string }>;
-    'wp:term'?: Array<Array<{ id: number; name: string; slug: string }>>;
-  };
-}
 
 const Articles = () => {
   const [searchParams] = useSearchParams();
@@ -33,7 +19,7 @@ const Articles = () => {
 
   const { data: articles, isLoading, error } = useQuery({
     queryKey: ['articles', page, searchTerm, selectedCategory],
-    queryFn: () => fetchPosts({ page: 1, perPage: 150, search: searchTerm }) as Promise<WordPressPost[]>,
+    queryFn: () => fetchPosts({ page: 1, perPage: 150, search: searchTerm }),
   });
   const rubriqueParam = searchParams.get('rubrique');
   const filteredArticles = articles?.filter((article) => {
